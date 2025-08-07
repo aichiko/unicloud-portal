@@ -85,7 +85,8 @@ function Header() {
             src={LogoImg}
             alt="区域智汇病理云平台"
             height={36}
-            className="object-contain"
+            className="object-contain cursor-pointer"
+            onClick={() => window.location.href = '/'}
           />
           <span className="text-white font-medium text-3xl">区域智汇病理云平台</span>
         </div>

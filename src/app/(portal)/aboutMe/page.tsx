@@ -13,9 +13,6 @@ function AboutMePage() {
         {/* 页面标题 */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">关于我们</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            我们是一家专注于数字病理和人工智能技术的高科技企业，致力于推动医疗诊断技术的创新与发展。
-          </p>
         </div>
 
         {/* 图片展示区域 */}

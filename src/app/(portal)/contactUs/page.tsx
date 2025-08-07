@@ -14,9 +14,6 @@ function ContactUsPage() {
         {/* 页面标题 */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">联系我们</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            如有任何疑问或合作需求，请通过以下方式与我们联系，我们将竭诚为您服务。
-          </p>
         </div>
 
         {/* 图片展示区域 */}
