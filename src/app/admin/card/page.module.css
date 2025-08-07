@@ -1,0 +1,10 @@
+/* search-area */
+.searchArea{
+  display: flex;
+}
+.searchItem{
+  margin-right: 20px;
+}
+.searchArea .searchItem .title{
+  font-weight: bold;
+}
