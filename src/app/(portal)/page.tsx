@@ -1,4 +1,10 @@
 import type { Metadata } from "next";
+import { Row, Col } from "antd";
+import BannerCarousel from "@/components/home/BannerCarousel";
+import ServiceModules from "@/components/home/ServiceModules";
+import NoticeList from "@/components/home/NoticeList";
+import NewsList from "@/components/home/NewsList";
+import PolicyList from "@/components/home/PolicyList";
 
 export const metadata: Metadata = {
   title: "区域智汇病理云平台",
@@ -7,14 +13,34 @@ export const metadata: Metadata = {
 
 function Page() {
   return (
-    <div className="flex flex-col">
-      {
-        Array.from({ length: 10 }, (_, i) => (
-          <div key={i} className="bg-amber-400 h-36 p-4 m-2 rounded shadow">
-            <p>这是一个示例内容块 {i + 1}</p>
-          </div>
-        ))
-      }
+    <div className="min-h-screen bg-white">
+      {/* Banner轮播图 */}
+      <BannerCarousel />
+      
+      {/* 功能模块 */}
+      <ServiceModules />
+      
+      {/* 信息展示区域 */}
+      <div className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <Row gutter={[24, 24]}>
+            {/* 通知公告 */}
+            <Col xs={24} lg={8}>
+              <NoticeList />
+            </Col>
+            
+            {/* 行业动态 */}
+            <Col xs={24} lg={8}>
+              <NewsList />
+            </Col>
+            
+            {/* 卫健委政策 */}
+            <Col xs={24} lg={8}>
+              <PolicyList />
+            </Col>
+          </Row>
+        </div>
+      </div>
     </div>
   );
 }
