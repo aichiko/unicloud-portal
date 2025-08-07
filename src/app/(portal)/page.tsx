@@ -7,12 +7,14 @@ export const metadata: Metadata = {
 
 function Page() {
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold text-center mt-10">欢迎来到区域智汇病理云平台</h1>
-      <p className="text-center mt-4">请使用左侧菜单导航进行操作。</p>
-      <div className="flex justify-center mt-10">
-        <button className="btn btn-primary">开始使用</button>
-      </div>
+    <div className="flex flex-col">
+      {
+        Array.from({ length: 10 }, (_, i) => (
+          <div key={i} className="bg-amber-400 h-36 p-4 m-2 rounded shadow">
+            <p>这是一个示例内容块 {i + 1}</p>
+          </div>
+        ))
+      }
     </div>
   );
 }

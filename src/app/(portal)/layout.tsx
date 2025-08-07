@@ -1,10 +1,19 @@
+"use client";
 import React from 'react';
+import { Layout } from 'antd';
+import { Footer, Header } from '@/components';
 
-function PortalLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+const { Content } = Layout;
+
+function PortalLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
   return (
-    <div className="flex flex-col h-screen">
-      {children}
-    </div>
+    <Layout className="h-screen flex flex-col">
+      <Header />
+      <Content className='flex-1 overflow-auto'>
+        {children}
+        <Footer />
+      </Content>
+    </Layout>
   );
 }
 

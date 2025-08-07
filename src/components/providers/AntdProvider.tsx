@@ -18,7 +18,20 @@ function AntdComponents({ children }: { children: React.ReactNode }) {
       componentSize="middle"
       theme={{
         token: {
-          colorPrimary: '#242BA0',
+          // #0b45a1 #4169e1 #242BA0
+          colorPrimary: '#0b45a1',
+        },
+        components: {
+          Layout: {
+            headerBg: '#0b45a1',
+            headerHeight: 80,
+          },
+          Menu: {
+            darkItemColor: '#ffffff',
+            darkItemHoverColor: '#4169e1',
+            darkGroupTitleColor: '#ffffff',
+            itemPaddingInline: 36
+          }
         },
       }}>
       <AntdApp>
