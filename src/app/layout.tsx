@@ -1,5 +1,5 @@
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-import AntdProvider from '@/components/providers/AntdProvider';
+import { AntdProvider } from '@/components';
 import "./globals.css";
 
 export default function RootLayout({
