@@ -12,7 +12,7 @@ const PolicyList: React.FC = () => {
   const fetchPolicies = async () => {
     try {
       setLoading(true);
-      const response = await PortalAPI.getPolicyList(1, 5);
+      const response = await PortalAPI.getPolicyList(1, 3);
       setPolicies(response.rows);
     } catch (error) {
       console.error('Error fetching policies:', error);
@@ -52,16 +52,18 @@ const PolicyList: React.FC = () => {
     <Card
       title={
         <div className="flex items-center">
-          <FileProtectOutlined className="text-red-500 mr-2" />
-          <span>卫健委政策</span>
+          <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+            <FileProtectOutlined className="text-red-600 text-lg" />
+          </div>
+          <span className="text-gray-800 font-semibold">卫健委政策</span>
         </div>
       }
       extra={
-        <Link href="/policies" className="text-blue-500 hover:text-blue-600">
+        <Link href="/policies" className="text-red-600 hover:text-red-700 font-medium">
           更多 →
         </Link>
       }
-      className="h-full"
+      className="h-full border-t-4 border-red-500 shadow-sm hover:shadow-md transition-shadow"
     >
       <Spin spinning={loading}>
         <List
@@ -73,7 +75,7 @@ const PolicyList: React.FC = () => {
                   <h4 className="text-gray-800 font-medium line-clamp-2 flex-1 mr-2">
                     {item.title}
                   </h4>
-                  <Tag color="red" className="shrink-0">
+                  <Tag color="red" className="shrink-0 font-medium">
                     政策
                   </Tag>
                 </div>

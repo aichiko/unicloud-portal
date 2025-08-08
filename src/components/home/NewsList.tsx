@@ -12,7 +12,7 @@ const NewsList: React.FC = () => {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const response = await PortalAPI.getNewsList(1, 5);
+      const response = await PortalAPI.getNewsList(1, 3);
       setNews(response.rows);
     } catch (error) {
       console.error('Error fetching news:', error);
@@ -48,16 +48,18 @@ const NewsList: React.FC = () => {
     <Card
       title={
         <div className="flex items-center">
-          <LineChartOutlined className="text-green-500 mr-2" />
-          <span>行业动态</span>
+          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+            <LineChartOutlined className="text-green-600 text-lg" />
+          </div>
+          <span className="text-gray-800 font-semibold">行业动态</span>
         </div>
       }
       extra={
-        <Link href="/news" className="text-blue-500 hover:text-blue-600">
+        <Link href="/news" className="text-green-600 hover:text-green-700 font-medium">
           更多 →
         </Link>
       }
-      className="h-full"
+      className="h-full border-t-4 border-green-500 shadow-sm hover:shadow-md transition-shadow"
     >
       <Spin spinning={loading}>
         <List
@@ -75,7 +77,7 @@ const NewsList: React.FC = () => {
                         热门
                       </Tag>
                     )}
-                    <Tag color="green" className="text-xs">
+                    <Tag color="green" className="text-xs font-medium">
                       动态
                     </Tag>
                   </div>

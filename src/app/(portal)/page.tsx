@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 function Page() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       {/* Banner轮播图 */}
       <BannerCarousel />
       
@@ -21,7 +21,7 @@ function Page() {
       <ServiceModules />
       
       {/* 信息展示区域 */}
-      <div className="py-12 bg-white">
+      <div className="py-12">
         <div className="container mx-auto px-4">
           <Row gutter={[24, 24]}>
             {/* 通知公告 */}

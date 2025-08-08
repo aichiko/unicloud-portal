@@ -53,7 +53,7 @@ const PortalAPI = {
    */
   getPolicyList: async (pageNum: number, pageSize: number) => {
     const response = await request.get('/prod-api/website/policy/list', {
-      params: { pageNum, pageSize }
+      params: { pageNum, pageSize, type: 'policy' }
     });
     const { code, msg, rows, total } = response.data as ApiListResponse<PortalPolicyModel>;
     if (code === 200) {

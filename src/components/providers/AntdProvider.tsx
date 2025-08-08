@@ -31,6 +31,13 @@ function AntdComponents({ children }: { children: React.ReactNode }) {
             darkItemHoverColor: '#4169e1',
             darkGroupTitleColor: '#ffffff',
             itemPaddingInline: 36
+          },
+          Carousel: {
+            arrowSize: 32,
+            arrowOffset: 16,
+            dotActiveWidth: 36,
+            dotWidth: 36,
+            dotGap: 8
           }
         },
       }}>
