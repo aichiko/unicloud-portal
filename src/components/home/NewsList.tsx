@@ -17,24 +17,7 @@ const NewsList: React.FC = () => {
     } catch (error) {
       console.error('Error fetching news:', error);
       // 如果API失败，使用模拟数据
-      setNews([
-        {
-          id: 1,
-          title: "牛肉类专委委办第新第书立省者",
-          content: "",
-          publishDate: "2025-07-08",
-          status: "1",
-          isHot: 1
-        },
-        {
-          id: 2,
-          title: "各类接触许犬还候增件申议无",
-          content: "",
-          publishDate: "2025-05-02",
-          status: "1",
-          isHot: 0
-        }
-      ]);
+      setNews([]);
     } finally {
       setLoading(false);
     }
@@ -43,6 +26,12 @@ const NewsList: React.FC = () => {
   useEffect(() => {
     fetchNews();
   }, []);
+
+  const onNewsClick = (newsItem: PortalNewsModel) => {
+    if (newsItem.linkUrl) {
+      window.open(newsItem.linkUrl, '_blank');
+    }
+  };
 
   return (
     <Card
@@ -65,7 +54,9 @@ const NewsList: React.FC = () => {
         <List
           dataSource={news}
           renderItem={(item) => (
-            <List.Item className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer px-2 py-3">
+            <List.Item 
+            onClick={() => onNewsClick(item)} 
+            className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer px-2 py-3">
               <div className="w-full">
                 <div className="flex items-start justify-between mb-2">
                   <h4 className="text-gray-800 font-medium line-clamp-2 flex-1 mr-2">

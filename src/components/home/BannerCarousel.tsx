@@ -80,6 +80,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ className }) => {
                   fill
                   className="object-cover"
                   priority
+                  placeholder='empty'
                 />
               )}
               <div className="absolute inset-0 bg-opacity-30" />

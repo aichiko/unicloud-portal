@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'standalone',
   images: {
     // remotePatterns: [new URL('http://192.168.10.252:9002'), new URL('http://upatholink.unicloud-med.com:9001')],
     remotePatterns: [

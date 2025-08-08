@@ -48,6 +48,12 @@ const PolicyList: React.FC = () => {
     fetchPolicies();
   }, []);
 
+  const onPolicyClick = (policy: PortalPolicyModel) => {
+    if (policy.linkUrl) {
+      window.open(policy.linkUrl, '_blank');
+    }
+  }
+
   return (
     <Card
       title={
@@ -69,7 +75,9 @@ const PolicyList: React.FC = () => {
         <List
           dataSource={policies}
           renderItem={(item) => (
-            <List.Item className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer px-2 py-3">
+            <List.Item 
+            onClick={() => onPolicyClick(item)} 
+            className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer px-2 py-3">
               <div className="w-full">
                 <div className="flex items-start justify-between mb-2">
                   <h4 className="text-gray-800 font-medium line-clamp-2 flex-1 mr-2">

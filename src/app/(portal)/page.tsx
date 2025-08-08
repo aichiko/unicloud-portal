@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Row, Col } from "antd";
-import BannerCarousel from "@/components/home/BannerCarousel";
-import ServiceModules from "@/components/home/ServiceModules";
-import NoticeList from "@/components/home/NoticeList";
-import NewsList from "@/components/home/NewsList";
-import PolicyList from "@/components/home/PolicyList";
+import { BannerCarousel, ServiceModules, NoticeList, NewsList, PolicyList } from "@/components"
 
 export const metadata: Metadata = {
   title: "区域智汇病理云平台",

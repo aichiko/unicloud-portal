@@ -17,16 +17,7 @@ const NoticeList: React.FC = () => {
     } catch (error) {
       console.error('Error fetching notices:', error);
       // 如果API失败，使用模拟数据
-      setNotices([
-        {
-          noticeId: 1,
-          noticeTitle: "平原县推进DZSY牛投建监护明期指导毛手青",
-          noticeContent: "",
-          noticeType: "1",
-          publishTime: "2025-05-08",
-          status: "1"
-        }
-      ]);
+      setNotices([]);
     } finally {
       setLoading(false);
     }
