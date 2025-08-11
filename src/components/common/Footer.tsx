@@ -2,6 +2,8 @@
 import { Layout, Row, Col, Space, Typography } from "antd";
 import Image from 'next/image';
 import OfficialImg from '@/assets/official_scan.jpg';
+import VideoImg from '@/assets/video_scan.png';
+
 
 const { Footer: AntdFooter } = Layout;
 const { Title, Text } = Typography;
@@ -61,7 +63,7 @@ function Footer() {
                   <div className="text-center">
                     <div className="w-24 h-24 mb-3 border border-gray-600 rounded">
                       <Image 
-                        src={OfficialImg} 
+                        src={VideoImg} 
                         alt="视频号" 
                         className="w-full h-full object-cover rounded"
                       />

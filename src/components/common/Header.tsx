@@ -3,7 +3,7 @@ import { Layout, Menu, Space, Typography } from "antd";
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import LogoImg from '@/assets/logo1_1.png';
+import LogoImg from '@/assets/header_logo.png';
 
 const { Header: AntdHeader } = Layout;
 const { Text } = Typography;

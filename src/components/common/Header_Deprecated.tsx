@@ -3,7 +3,7 @@ import { Layout, Menu, Button, Space, MenuProps } from "antd";
 import { useEffect, useState } from "react";
 import PortalAPI from "@/apis/portalApi";
 import Image from 'next/image';
-import LogoImg from '@/assets/logo1_1.png';
+import LogoImg from '@/assets/header_logo.png';
 
 const { Header: AntdHeader } = Layout;
 
