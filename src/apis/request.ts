@@ -11,7 +11,6 @@ const instance = axios.create({
 });
 
 // 封装 axios 拦截器
-
 instance.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么

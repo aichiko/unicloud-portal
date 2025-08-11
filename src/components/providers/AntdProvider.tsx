@@ -19,11 +19,12 @@ function AntdComponents({ children }: { children: React.ReactNode }) {
       theme={{
         token: {
           // #0b45a1 #4169e1 #242BA0
-          colorPrimary: '#0b45a1',
+          colorPrimary: '#2769AF',
         },
         components: {
           Layout: {
             headerHeight: 80,
+            bodyBg: '#F2F9FE',
           },
           Menu: {
             itemBg: '#ffffff',
