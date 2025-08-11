@@ -83,7 +83,8 @@ const ServiceModules: React.FC = () => {
       modules.push(module);
     });
 
-    const filteredModules = modules.slice(0, 4);
+    // const filteredModules = modules.slice(0, 4);
+    const filteredModules = modules;
     return filteredModules;
   };
 

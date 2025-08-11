@@ -32,7 +32,7 @@ export default function NewsPage() {
       {/* 顶部宣传图片 */}
       <div className="relative w-full h-128 overflow-hidden">
         <Image
-          src="/top_propaganda.jpg"
+          src="/top_propaganda_2.png"
           alt="行业动态宣传图"
           fill
           className="object-cover"
