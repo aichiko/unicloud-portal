@@ -20,10 +20,13 @@ function Page() {
       <NewsTitle />
       
       {/* 信息展示区域 */}
-      <div className="py-12 bg-gray-50">
+      <div className="py-12">
         <div className="max-w-7xl mx-auto px-6">
           {/* 上半部分 */}
-          <Row gutter={[32, 32]} className="mb-8">
+          <Row gutter={[32, 32]} className="mb-8" style={{
+            backgroundColor: '#FFFFFF',
+            minHeight: '600px'
+          }}>
             {/* 左侧：通知公告（大区域） */}
             <Col xs={24} lg={12}>
               <NoticeList />
@@ -36,7 +39,10 @@ function Page() {
           </Row>
           
           {/* 下半部分 */}
-          <Row gutter={[32, 32]}>
+          <Row gutter={[32, 32]} style={{
+            backgroundColor: '#FFFFFF',
+            minHeight: '600px'
+          }}>
             {/* 左侧：行业动态 */}
             <Col xs={24} lg={12}>
               <NewsList />
