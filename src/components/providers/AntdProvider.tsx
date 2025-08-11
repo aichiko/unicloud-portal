@@ -23,13 +23,10 @@ function AntdComponents({ children }: { children: React.ReactNode }) {
         },
         components: {
           Layout: {
-            headerBg: '#0b45a1',
             headerHeight: 80,
           },
           Menu: {
-            darkItemColor: '#ffffff',
-            darkItemHoverColor: '#4169e1',
-            darkGroupTitleColor: '#ffffff',
+            itemBg: '#ffffff',
             itemPaddingInline: 36
           },
           Carousel: {

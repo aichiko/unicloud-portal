@@ -1,91 +1,89 @@
 'use client';
-import { Layout, Row, Col, Space, Typography, Divider } from "antd";
-import { PhoneOutlined, EnvironmentOutlined, MailOutlined, GlobalOutlined } from '@ant-design/icons';
+import { Layout, Row, Col, Space, Typography } from "antd";
 import Image from 'next/image';
 import OfficialImg from '@/assets/official_scan.jpg';
 
 const { Footer: AntdFooter } = Layout;
-const { Title, Text, Link } = Typography;
+const { Title, Text } = Typography;
 
 function Footer() {
   return (
-    <AntdFooter className=" text-white p-0">
+    <AntdFooter className="bg-gray-800 text-white p-0" style={{
+      backgroundColor: '#222834',
+      color: '#ffffff'
+    }}>
       {/* 主要内容区域 */}
-      <div className="px-4">
+      <div className="px-6 py-12">
         <div className="max-w-7xl mx-auto">
           <Row gutter={[48, 32]}>
-            {/* 机构信息 */}
-            <Col xs={24} md={6}>
-              <div className="mb-6">
-                <Title level={3} className="text-white mb-4">
-                  武汉优云智能医疗科技
+            {/* 公司信息 */}
+            <Col xs={24} lg={16}>
+              <div className="space-y-6">
+                <Title level={3} className="mb-6" style={{ color: '#ffffff' }}>
+                  武汉优云医疗科技有限公司
                 </Title>
-                <Text className="text-blue-100 text-base leading-relaxed">
-                  致力于提供专业的病理诊断服务，运用人工智能技术，推动医疗卫生事业发展。
-                </Text>
+                
+                <div className="space-y-3">
+                  <div className="flex">
+                    <Text className="w-16" style={{ color: '#d1d5db' }}>地址：</Text>
+                    <Text style={{ color: '#d1d5db' }}>武汉市高新区77号城域BC区24栋3层</Text>
+                  </div>
+                  <div className="flex">
+                    <Text className="w-16" style={{ color: '#d1d5db' }}>电话：</Text>
+                    <Text style={{ color: '#d1d5db' }}>027-59320986</Text>
+                  </div>
+                  <div className="flex">
+                    <Text className="w-16" style={{ color: '#d1d5db' }}>邮编：</Text>
+                    <Text style={{ color: '#d1d5db' }}>430000</Text>
+                  </div>
+                </div>
               </div>
             </Col>
 
-            {/* 联系信息 */}
-            <Col xs={24} md={6}>
-              <Title level={4} className="text-white mb-2">联系我们</Title>
-              <Space direction="vertical" size="middle" className="w-full">
-                <div className="flex items-center space-x-3">
-                  <EnvironmentOutlined className="text-blue-200 text-lg" />
-                  <div>
-                    <Text className="text-blue-100 block">湖北省武汉市东湖新技术开发区高新大道818号武汉高科医疗器械园</Text>
+            {/* 关注我们 */}
+            <Col xs={24} lg={8}>
+              <div className="space-y-6">
+                <Title level={3} className="mb-6" style={{ color: '#ffffff' }}>
+                  关注我们
+                </Title>
+                
+                <div className="flex space-x-6">
+                  <div className="text-center">
+                    <div className="w-24 h-24 mb-3 border border-gray-600 rounded">
+                      <Image 
+                        src={OfficialImg} 
+                        alt="公众号" 
+                        className="w-full h-full object-cover rounded"
+                      />
+                    </div>
+                    <Text className="text-sm" style={{ color: '#d1d5db' }}>公众号</Text>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-24 h-24 mb-3 border border-gray-600 rounded">
+                      <Image 
+                        src={OfficialImg} 
+                        alt="视频号" 
+                        className="w-full h-full object-cover rounded"
+                      />
+                    </div>
+                    <Text className="text-sm" style={{ color: '#d1d5db' }}>视频号</Text>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <PhoneOutlined className="text-blue-200 text-lg" />
-                  <Text className="text-blue-100">027-59320986</Text>
-                </div>
-              </Space>
-            </Col>
-
-            {/* 快速链接 */}
-            <Col xs={24} md={6}>
-              <Title level={4} className="text-white mb-6">快速链接</Title>
-              <Space direction="vertical" size="middle">
-                <Link href="aboutMe" className="text-blue-100 hover:text-white transition-colors">
-                  关于我们
-                </Link>
-                <Link href="contactUs" className="text-blue-100 hover:text-white transition-colors">
-                  联系我们
-                </Link>
-              </Space>
-            </Col>
-
-            {/* 微信公众号 */}
-            <Col xs={24} md={6}>
-              <Title level={4} className="text-white mb-6">优云智能微信公众号</Title>
-              <Space direction="vertical" size="middle">
-                <div className="flex items-center space-x-3">
-                  <Image src={OfficialImg} alt="微信公众号" className="w-24 h-24" />
-                </div>
-              </Space>
+              </div>
             </Col>
           </Row>
         </div>
       </div>
-      <Divider className="border-blue-300 my-4" />
 
-      <div className="text-center">
-        <Space direction="vertical" size="small">
-          <Text className="text-blue-200 text-sm">
-            © 2025 区域智汇病理云平台. All rights reserved
+      {/* 底部版权信息 */}
+      <div className="border-t border-gray-700 py-4">
+        <div className="max-w-7xl mx-auto px-6 text-center cursor-pointer" onClick={() => {
+          window.open('https://beian.miit.gov.cn/', '_blank');
+        }}>
+          <Text className="text-sm" style={{ color: '#9ca3af' }}>
+            版权所有：武汉优云智能医疗科技有限公司  鄂ICP备2024068825号-1
           </Text>
-          <Text className="text-blue-100 text-sm">
-            武汉优云智能医疗科技有限公司 版权所有
-            <Link
-              href="https://beian.miit.gov.cn/"
-              target="_blank"
-              className="text-blue-200 hover:text-white ml-2"
-            >
-              鄂ICP备2024068825号-1
-            </Link>
-          </Text>
-        </Space>
+        </div>
       </div>
     </AntdFooter>
   );

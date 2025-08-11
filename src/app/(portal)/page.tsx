@@ -18,7 +18,7 @@ function Page() {
       
       {/* 信息展示区域 */}
       <div className="py-12">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto px-4">
           <Row gutter={[24, 24]}>
             {/* 通知公告 */}
             <Col xs={24} lg={8}>
