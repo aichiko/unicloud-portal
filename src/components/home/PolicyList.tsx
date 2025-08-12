@@ -1,22 +1,34 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Spin } from 'antd';
+import { Button, List, Spin } from 'antd';
 import PortalAPI from '@/apis/portalApi';
+import HomeServiceTitle from '../common/HomeServiceTitle';
+import ServiceListItem from './ServiceListItem';
+import { useRouter } from 'next/navigation';
+
+// 需要导出类型
+export interface PortalPolicyModel {
+  id: number;
+  title: string;
+  type: string;
+  description: string;
+  linkUrl: string;
+  parentId: string;
+  sortOrder?: number;
+  createTime?: string;
+  content?: string;
+}
 
 const PolicyList: React.FC = () => {
   const [policies, setPolicies] = useState<PortalPolicyModel[]>([]);
-  const [selectedPolicy, setSelectedPolicy] = useState<PortalPolicyModel | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchPolicies = async () => {
     try {
       setLoading(true);
-      const response = await PortalAPI.getPolicyList(1, 5);
+      const response = await PortalAPI.getPolicyList(1, 3);
       if (response && response.rows) {
         setPolicies(response.rows);
-        if (response.rows.length > 0) {
-          setSelectedPolicy(response.rows[0]);
-        }
       } else {
         throw new Error('API response is empty');
       }
@@ -37,10 +49,18 @@ const PolicyList: React.FC = () => {
     }
   };
 
+  const router = useRouter();
+
+  // 了解更多
+  const onLearnMoreClick = () => {
+    // navigate to policy list page
+    router.push('/policies');
+  };
+
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold mb-4">政策法规</h2>
+      <div className="bg-white p-6">
+        <HomeServiceTitle title='卫健委政策' />
         <div className="flex justify-center py-8">
           <Spin size="large" />
         </div>
@@ -48,62 +68,30 @@ const PolicyList: React.FC = () => {
     );
   }
 
-  if (!policies.length) {
-    return (
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold mb-4">政策法规</h2>
-        <div className="text-center py-8 text-gray-500">暂无政策法规</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h2 className="text-lg font-semibold mb-4">政策法规</h2>
-      
-      {/* 主要内容区域 */}
-      <div className="bg-blue-50 rounded-lg p-6 mb-4">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-lg font-medium text-gray-900 leading-tight">
-            {selectedPolicy?.title}
-          </h3>
-          <div className="text-lg font-medium text-blue-600">
-            {selectedPolicy?.createTime}
-          </div>
-        </div>
-        
-        <p className="text-gray-700 leading-relaxed">
-          {selectedPolicy?.description || '点击查看政策详情...'}
-        </p>
-        
-        {selectedPolicy?.linkUrl && (
-          <div className="mt-4">
-            <button
-              onClick={() => selectedPolicy && onPolicyClick(selectedPolicy)}
-              className="text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
-            >
-              查看详情 →
-            </button>
-          </div>
+    <div className="bg-white p-6">
+      <HomeServiceTitle title='卫健委政策' />
+      <List
+        split={false}
+        style={{ marginTop: '36px' }}
+        dataSource={policies}
+        renderItem={(item, index) => (
+          <ServiceListItem itemModel={item} firstItem={index === 0} onClick={() => onPolicyClick(item)} />
         )}
-      </div>
-
-      {/* 其他政策列表 */}
-      <div className="space-y-2">
-        {policies.slice(1).map((policy) => (
-          <div
-            key={policy.id}
-            className="flex justify-between items-center py-2 px-3 hover:bg-blue-50 rounded cursor-pointer transition-colors"
-            onClick={() => setSelectedPolicy(policy)}
-          >
-            <span className="text-gray-700 truncate flex-1">
-              {policy.title}
-            </span>
-            <span className="text-gray-500 text-sm ml-4">
-              {policy.createTime}
-            </span>
-          </div>
-        ))}
+      />
+      {/* 底部的button，了解更多 */}
+      <div className="flex justify-end py-4 mt-12 mr-6">
+        <Button type='default' variant='outlined'
+          onClick={onLearnMoreClick}
+          style={{
+            borderColor: '#2769AF',
+            color: '#2769AF',
+            padding: '0 48px',
+            fontSize: '16px',
+            height: '40px',
+            lineHeight: '40px',
+            borderRadius: '4px',
+          }}>了解更多</Button>
       </div>
     </div>
   );

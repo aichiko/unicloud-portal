@@ -8,3 +8,4 @@ export { default as AcademicPolicyList } from './AcademicPolicyList';
 
 export { default as PlatformIntro } from './PlatformIntro';
 export { default as NewsTitle } from './NewsTitle';
+export { default as ServiceListItem } from './ServiceListItem';

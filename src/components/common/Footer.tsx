@@ -51,7 +51,7 @@ function Footer() {
                 
                 <div className="flex space-x-6">
                   <div className="text-center">
-                    <div className="w-24 h-24 mb-3 border border-gray-600 rounded">
+                    <div className="w-24 h-24 mb-3 border border-gray-600 rounded hover:scale-110 transition-transform duration-300">
                       <Image 
                         src={OfficialImg} 
                         alt="公众号" 
@@ -61,7 +61,7 @@ function Footer() {
                     <Text className="text-sm" style={{ color: '#d1d5db' }}>公众号</Text>
                   </div>
                   <div className="text-center">
-                    <div className="w-24 h-24 mb-3 border border-gray-600 rounded">
+                    <div className="w-24 h-24 mb-3 border border-gray-600 rounded hover:scale-110 transition-transform duration-300">
                       <Image 
                         src={VideoImg} 
                         alt="视频号" 
