@@ -24,10 +24,11 @@ interface ModuleItemsType {
 interface ServiceModuleItemProps {
   module: ModuleItemsType;
   index: number;
+  totalCount: number;
   onItemClick: (item: ModuleItemsType) => void;
 }
 
-function ServiceModuleItem({ module, index, onItemClick }: ServiceModuleItemProps) {
+function ServiceModuleItem({ module, index, totalCount, onItemClick }: ServiceModuleItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -49,8 +50,8 @@ function ServiceModuleItem({ module, index, onItemClick }: ServiceModuleItemProp
         <Image
           src={IconArray[index]}
           alt={module.label || ''}
-          width={50}
-          height={50}
+          width={isMobile ? 30 : 50}
+          height={isMobile ? 30 : 50}
         />
       );
     }
@@ -79,22 +80,36 @@ function ServiceModuleItem({ module, index, onItemClick }: ServiceModuleItemProp
     onItemClick(item);
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div
-      className="relative group cursor-pointer h-64 flex-1 flex items-center justify-center transition-all duration-500 ease-in-out"
+      className="relative group cursor-pointer h-32 md:h-64 w-full md:flex-1 flex items-center justify-center transition-all duration-500 ease-in-out"
       style={{
         backgroundColor: isHovered ? getGradientBgColor(index) : getBgColor(index),
-        borderRight: index < 4 ? '1px solid rgba(255,255,255,0.2)' : 'none'
+        borderRight: !isMobile && index < 4 ? '1px solid rgba(255,255,255,0.2)' : 'none',
+        borderBottom: isMobile && index < totalCount - 1 ? '1px solid rgba(255,255,255,0.2)' : 'none'
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={() => handleItemClick(module)}
     >
       <div className="text-center relative z-10 flex flex-col items-center">
-        <div className="p-4 bg-white rounded-full mb-4 flex justify-center transform transition-transform duration-300 group-hover:scale-110">
+        <div className="p-2 md:p-4 bg-white rounded-full mb-2 md:mb-4 flex justify-center transform transition-transform duration-300 group-hover:scale-110">
           {getIcon(index)}
         </div>
-        <span className="text-4xl font-bold text-white">
+        <span className="text-lg md:text-4xl font-bold text-white px-2">
           {module.label}
         </span>
       </div>
@@ -354,12 +369,13 @@ const ServiceModules: React.FC = () => {
   return (
     <div className="py-0 bg-white">
       <div className="w-full">
-        <div className="flex">
+        <div className="flex flex-col md:flex-row">
           {moduleItems.map((module, index) => (
             <ServiceModuleItem
               key={module.key}
               module={module}
               index={index}
+              totalCount={moduleItems.length}
               onItemClick={handleItemClick}
             />
           ))}
