@@ -1,9 +1,10 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import { Card, List, Tag, Spin } from 'antd';
 import PortalAPI from '@/apis/portalApi';
 import HomeServiceTitle from '../common/HomeServiceTitle';
+import DateTimeComponent from '../common/DateTimeComponent';
+import InformListItem from '../common/InformListItem';
 
 const NoticeList: React.FC = () => {
   const [notices, setNotices] = useState<PortalNoticeModel[]>([]);
@@ -47,15 +48,20 @@ const NoticeList: React.FC = () => {
   return (
     <div className="bg-white p-6">
       <HomeServiceTitle title="通知公告" />
-      <div className='border-[#2769AF] border-2 mt-4 min-h-[388px]'>
-        {selectedNotice ? (
-          <div className="p-4">
-            <h3 className="text-lg font-semibold">{selectedNotice.noticeTitle}</h3>
-            <p className="text-gray-600">{selectedNotice.noticeContent}</p>
-          </div>
-        ) : (
-          <div className="p-4 text-gray-500">请选择一个通知查看详情</div>
-        )}
+      <div className='border-[#2769AF] border-2 mt-4 min-h-[388px] p-14'>
+        
+        {
+          selectedNotice && (
+            <>
+          <DateTimeComponent dateString={selectedNotice?.publishTime} />
+            <InformListItem
+              title={selectedNotice.noticeTitle}
+              content={selectedNotice.noticeContent}
+              firstItem={true}
+            />
+            </>
+          )
+        }
       </div>
     </div>
   );

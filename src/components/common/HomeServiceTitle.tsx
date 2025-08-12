@@ -1,9 +1,9 @@
 
 function HomeServiceTitle({ title }: { title: string }) {
   return (
-    <div className="text-xl font-semibold h-9 min-w-32 bg-[#2769AF] text-white flex">
+    <div className="text-xl font-semibold h-9 bg-[#2769AF] text-white inline-flex w-fit">
       {/* 居中显示 */}
-      <span className="my-auto ml-6">{`${title}  >  `}</span>
+      <span className="my-auto mx-6">{`${title}  >  `}</span>
     </div>
   );
 }

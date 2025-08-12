@@ -41,6 +41,9 @@ importers:
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
+      swr:
+        specifier: ^2.3.6
+        version: 2.3.6(react@19.1.0)
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -1254,8 +1257,8 @@ packages:
   stylis@4.3.6:
     resolution: {integrity: sha512-yQ3rwFWRfwNUY7H5vpU0wfdkNSnvnJinhF9830Swlaxl03zsOjCfmX0ugac+3LtK0lYSgwL/KXc8oYL3mG4YFQ==}
 
-  swr@2.3.5:
-    resolution: {integrity: sha512-4e7pjTVulZTIL+b/S0RYFsgDcTcXPLUOvBPqyh9YdD+PkHeEMoaPwDmF9Kv6I1nnPg1OFKhiiEYpsYaaE2W2jA==}
+  swr@2.3.6:
+    resolution: {integrity: sha512-wfHRmHWk/isGNMwlLGlZX5Gzz/uTgo0o2IRuTMcf4CPuPFJZlq0rDaKUx+ozB5nBOReNV1kiOyzMfj+MBMikLw==}
     peerDependencies:
       react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -1428,7 +1431,7 @@ snapshots:
       lodash-es: 4.17.21
       rc-util: 5.44.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
-      swr: 2.3.5(react@19.1.0)
+      swr: 2.3.6(react@19.1.0)
     transitivePeerDependencies:
       - react-dom
 
@@ -1470,7 +1473,7 @@ snapshots:
       rc-util: 5.44.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
-      swr: 2.3.5(react@19.1.0)
+      swr: 2.3.6(react@19.1.0)
       warning: 4.0.3
 
   '@ant-design/pro-list@2.6.10(antd@5.26.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(rc-field-form@2.7.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
@@ -1502,7 +1505,7 @@ snapshots:
       rc-util: 5.44.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
-      swr: 2.3.5(react@19.1.0)
+      swr: 2.3.6(react@19.1.0)
 
   '@ant-design/pro-skeleton@2.2.1(antd@5.26.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
@@ -1550,7 +1553,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       safe-stable-stringify: 2.5.0
-      swr: 2.3.5(react@19.1.0)
+      swr: 2.3.6(react@19.1.0)
 
   '@ant-design/react-slick@1.1.2(react@19.1.0)':
     dependencies:
@@ -2658,7 +2661,7 @@ snapshots:
 
   stylis@4.3.6: {}
 
-  swr@2.3.5(react@19.1.0):
+  swr@2.3.6(react@19.1.0):
     dependencies:
       dequal: 2.0.3
       react: 19.1.0
