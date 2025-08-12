@@ -72,6 +72,28 @@ interface PortalPolicyModel {
   getDate?: string;
 }
 
+interface AcademicPolicyModel  {
+  id: number;
+  title: string;
+  type: string;
+  description: string;
+  linkUrl: string;
+  parentId: string;
+  remark?: string;
+  sortOrder?: number;
+  coverUrl?: string;
+  createTime?: string;
+  updateTime?: string;
+  createBy?: string;
+  updateBy?: string;
+  status?: string;
+  name?: string;
+  subType?: string;
+  slogan?: string;
+  content?: string;
+  categoryId?: number;
+  getDate?: string;
+}
 
 /**
 {

@@ -3,19 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import PortalAPI from '@/apis/portalApi';
 
-// 需要导出类型
-export interface PortalPolicyModel {
-  id: number;
-  title: string;
-  type: string;
-  description: string;
-  linkUrl: string;
-  parentId: string;
-  sortOrder?: number;
-  createTime?: string;
-  content?: string;
-}
-
 const PolicyList: React.FC = () => {
   const [policies, setPolicies] = useState<PortalPolicyModel[]>([]);
   const [selectedPolicy, setSelectedPolicy] = useState<PortalPolicyModel | null>(null);
@@ -35,41 +22,6 @@ const PolicyList: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching policies:', error);
-      // 如果API失败，使用模拟数据
-      const mockData = [
-        {
-          id: 1,
-          title: "省人民政府办公厅印发《关于深化改革促进乡村医疗卫生体系健康发展的实施方案》的通知",
-          type: "policy",
-          description: "深化改革促进乡村医疗卫生体系健康发展，加强基层医疗服务能力建设，提升乡村医疗卫生服务水平，保障农村居民健康...",
-          linkUrl: "http://wjw.hubei.gov.cn/bmdt/ztzl/jkfp/zcwj/202505/t20250515_5651578.shtml",
-          parentId: "",
-          sortOrder: 1,
-          createTime: "2025.06"
-        },
-        {
-          id: 2,
-          title: "省卫健委解读：《关于深化改革促进乡村医疗卫生体系健康发展的实施方案》",
-          type: "policy",
-          description: "详细解读乡村医疗卫生体系改革方案的实施细则和具体要求...",
-          linkUrl: "http://wjw.hubei.gov.cn/bmdt/ztzl/jkfp/bsjd/202505/t20250515_5651541.shtml",
-          parentId: "",
-          sortOrder: 2,
-          createTime: "2025.06"
-        },
-        {
-          id: 3,
-          title: "医疗机构药品采购管理规定",
-          type: "policy",
-          description: "规范医疗机构药品采购行为，确保药品质量和供应安全...",
-          linkUrl: "http://example.com/policy3",
-          parentId: "",
-          sortOrder: 3,
-          createTime: "2025.05"
-        }
-      ];
-      setPolicies(mockData);
-      setSelectedPolicy(mockData[0]);
     } finally {
       setLoading(false);
     }
