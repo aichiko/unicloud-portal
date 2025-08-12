@@ -28,7 +28,7 @@ function Footer() {
                 <div className="space-y-3">
                   <div className="flex">
                     <Text className="w-16" style={{ color: '#d1d5db' }}>地址：</Text>
-                    <Text style={{ color: '#d1d5db' }}>武汉市高新区77号城域BC区24栋3层</Text>
+                    <Text style={{ color: '#d1d5db' }}>武汉市高科医疗器械园B区22栋3层</Text>
                   </div>
                   <div className="flex">
                     <Text className="w-16" style={{ color: '#d1d5db' }}>电话：</Text>

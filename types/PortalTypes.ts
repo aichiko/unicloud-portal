@@ -170,3 +170,17 @@ interface PortalNoticeModel {
   remark?: string;
   type?: string;
 }
+
+
+/**
+ * 门户用户模型
+ */
+interface PortalUserModel {
+  id: number;
+  username: string;
+  password: string;
+  email: string;
+  createTime?: string;
+  updateTime?: string;
+  status?: string;
+}

@@ -4,9 +4,8 @@ const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://192.168.10.252:9002",
   timeout: 10000, // 请求超时时间
   headers: {
-    'official': true,
+    // 'official': true,
     "Content-Type": "application/json",
-    // Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImxvZ2luX3VzZXJfa2V5IjoiNWIzYjVlYzMtOTI3Ny00MjY4LThjM2QtM2Y5OTE0MDFmOTIzIn0.B21z_CdSe9aADLAUH0fp_avSqxehRfuJ07bWfsHj_OkJ1FwuITkWIYCSWBjaXeQJPLJcDDE5gs1uVWpPgikEXw',
   },
 });
 

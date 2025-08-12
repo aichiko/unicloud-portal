@@ -44,8 +44,7 @@ const AcademicPolicyList: React.FC = () => {
 
   // 了解更多
   const onLearnMoreClick = () => {
-    // navigate to policy list page
-    router.push('/policies');
+    router.push('/policies?type=academic');
   };
 
   if (loading) {

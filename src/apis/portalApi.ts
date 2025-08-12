@@ -80,6 +80,35 @@ const PortalAPI = {
     }
   },
 
+  /**
+   * 用户登录
+   * @param username 用户名
+   * @param password 密码
+   * 登录成功的用户信息
+   */
+  portalLogin: async (username: string, password: string) => {
+    const response = await request.post('/prod-api/login', {
+      username,
+      password
+    });
+    const { code, msg, data } = response.data as ApiResponse<string>;
+    if (code === 200) {
+      return data;
+    } else {
+      throw new Error(msg);
+    }
+  },
+
+  portalGetUserInfo: async () => {
+    const response = await request.get('/prod-api/getInfo');
+    const { code, msg, data } = response.data as ApiResponse<PortalUserModel>;
+    if (code === 200) {
+      return data;
+    } else {
+      throw new Error(msg);
+    }
+  }
+
 };
 
 export default PortalAPI;

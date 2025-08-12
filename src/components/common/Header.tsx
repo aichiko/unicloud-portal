@@ -1,8 +1,11 @@
 'use client';
-import { Layout, Menu, Space, Typography } from "antd";
-import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Button, Layout, Menu, Space, Typography } from "antd";
+import { MailOutlined, PhoneOutlined, LoginOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useUserStore } from '@/store/userStore';
+import LoginModal from '@/components/common/LoginModal';
 import LogoImg from '@/assets/header_logo.png';
 import TitleImg from '@/assets/title_img.png';
 import PlatformImg from '@/assets/Pathology_Cloud_Platform.png';
@@ -41,6 +44,29 @@ function HeaderContact({ title, contact }: { title: 'email' | 'phone'; contact: 
 
 function Header() {
   const router = useRouter();
+  const { isLoggedIn, userInfo, logout, initializeAuth } = useUserStore();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  // 初始化认证状态
+  React.useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  const handleLogout = () => {
+    logout();
+    router.push('/'); // 退出后跳转到首页
+  };
+
+  // 处理登录成功 - 关闭Modal即可，状态由zustand管理
+  const handleLoginSuccess = (values: { username: string; password: string }) => {
+    console.log('Header登录成功:', values);
+    setIsLoginModalOpen(false);
+  };
+
+  // 处理登录按钮点击
+  const handleLoginClick = () => {
+    setIsLoginModalOpen(true);
+  };
 
   const menuItems = [
     {
@@ -102,10 +128,13 @@ function Header() {
       </div>
 
       {/* 下半部分：导航菜单 */}
-      <AntdHeader className="px-6 h-16 bg-white shadow-sm" style={{
+      <AntdHeader className="px-6 bg-white shadow-sm" style={{
         backgroundColor: 'white',
+        display: "flex",
+        flexDirection: 'row',
+        justifyContent: 'space-between'
       }}>
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto flex-1">
           <Menu
             mode="horizontal"
             items={menuItems}
@@ -118,7 +147,41 @@ function Header() {
             }}
           />
         </div>
+        {/* 登录以及用户信息，未登录显示登录按钮，已登录显示用户名和退出按钮 */}
+        <div className="flex items-center space-x-4">
+          {isLoggedIn ? (
+            <>
+              <Space className="text-gray-600">
+                <UserOutlined />
+                <span>欢迎您，{userInfo?.username || '用户'}</span>
+              </Space>
+              <Button 
+                type="text" 
+                icon={<LogoutOutlined />}
+                onClick={handleLogout}
+                className="text-gray-600 hover:text-red-500"
+              >
+                退出
+              </Button>
+            </>
+          ) : (
+            <Button 
+              type="primary" 
+              icon={<LoginOutlined />}
+              onClick={handleLoginClick}
+            >
+              登录
+            </Button>
+          )}
+        </div>
       </AntdHeader>
+
+      {/* 登录Modal */}
+      <LoginModal
+        open={isLoginModalOpen}
+        onCancel={() => setIsLoginModalOpen(false)}
+        onSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }

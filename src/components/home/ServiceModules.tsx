@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import PortalAPI from '@/apis/portalApi';
+import LoginModal from '@/components/common/LoginModal';
+import { useUserStore } from '@/store/userStore';
 import disgnosis_icon from '@/assets/auxiliary_diagnosis_icon.png'
 import live_stream_icon from '@/assets/live_stream_icon.png'
 import lungs_icon from '@/assets/lungs_icon.png'
@@ -74,9 +76,6 @@ function ServiceModuleItem({ module, index, totalCount, onItemClick }: ServiceMo
     if ((item.children ?? []).length > 0) {
       return;
     }
-    if (item.itemModel.linkUrl) {
-      window.open(item.itemModel.linkUrl, '_blank');
-    }
     onItemClick(item);
   };
 
@@ -86,10 +85,10 @@ function ServiceModuleItem({ module, index, totalCount, onItemClick }: ServiceMo
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -130,7 +129,7 @@ function ServiceModuleItem({ module, index, totalCount, onItemClick }: ServiceMo
       {isHovered && (
         <>
           {/* 第一层水波纹 */}
-          <div 
+          <div
             className="absolute inset-0 opacity-40"
             style={{
               background: `linear-gradient(45deg, 
@@ -144,7 +143,7 @@ function ServiceModuleItem({ module, index, totalCount, onItemClick }: ServiceMo
             }}
           />
           {/* 第二层水波纹 */}
-          <div 
+          <div
             className="absolute inset-0 opacity-30"
             style={{
               background: `linear-gradient(-45deg, 
@@ -162,7 +161,7 @@ function ServiceModuleItem({ module, index, totalCount, onItemClick }: ServiceMo
 
       {/* 下拉菜单 */}
       {showDropdown && module.children && module.children.length > 0 && (
-        <div 
+        <div
           className="absolute top-full left-0 right-0 z-50 transform transition-all duration-300 ease-out animate-dropdown"
           style={{
             background: 'linear-gradient(135deg, rgba(39,105,175,0.95) 0%, rgba(67,177,210,0.95) 100%)',
@@ -193,7 +192,7 @@ function ServiceModuleItem({ module, index, totalCount, onItemClick }: ServiceMo
                   {child.itemModel.description}
                 </div>
               )}
-              
+
               {/* 悬停时的箭头指示器 */}
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-all duration-200 ease-in-out">
                 <div className="w-0 h-0 border-l-6 border-l-white border-t-4 border-b-4 border-t-transparent border-b-transparent" />
@@ -209,6 +208,10 @@ function ServiceModuleItem({ module, index, totalCount, onItemClick }: ServiceMo
 const ServiceModules: React.FC = () => {
   const [moduleItems, setModuleItems] = useState<ModuleItemsType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  
+  // 使用zustand管理用户状态
+  const { isLoggedIn, initializeAuth } = useUserStore();
 
   // 添加CSS动画样式
   useEffect(() => {
@@ -249,7 +252,7 @@ const ServiceModules: React.FC = () => {
       }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
@@ -350,10 +353,33 @@ const ServiceModules: React.FC = () => {
 
   useEffect(() => {
     fetchTitleListData();
-  }, []);
+    
+    // 初始化用户认证状态
+    initializeAuth();
+  }, [initializeAuth]);
+
+  // 处理登录成功 - 现在由zustand管理，这里只需要关闭Modal
+  const handleLoginSuccess = (values: { username: string; password: string }) => {
+    console.log('登录成功:', values);
+    setIsLoginModalOpen(false);
+  };
 
   const handleItemClick = (item: ModuleItemsType) => {
     console.log(`Clicked on ${item.label}`, item);
+    
+    // 检查登录状态
+    if (!isLoggedIn) {
+      // 未登录，显示登录Modal
+      setIsLoginModalOpen(true);
+      return;
+    }
+    
+    // 已登录，执行原有逻辑
+    if (item.itemModel.linkUrl) {
+      const token = localStorage.getItem('userToken');
+      const auth_linkUrl = `${item.itemModel.linkUrl}?token=${token}`;
+      window.open(auth_linkUrl, '_blank');
+    }
   };
 
   if (loading) {
@@ -381,6 +407,13 @@ const ServiceModules: React.FC = () => {
           ))}
         </div>
       </div>
+      
+      {/* 登录Modal */}
+      <LoginModal
+        open={isLoginModalOpen}
+        onCancel={() => setIsLoginModalOpen(false)}
+        onSuccess={handleLoginSuccess}
+      />
     </div>
   );
 };

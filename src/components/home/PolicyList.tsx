@@ -53,8 +53,7 @@ const PolicyList: React.FC = () => {
 
   // 了解更多
   const onLearnMoreClick = () => {
-    // navigate to policy list page
-    router.push('/policies');
+    router.push('/policies?type=national');
   };
 
   if (loading) {
