@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  unicloud-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9001:3000"
+    environment:
+      - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
+      # JWT 密钥（生产环境请修改为更安全的密钥）
+      - JWT_SECRET=portal_secret_key_unicloud
+    restart: unless-stopped
+    container_name: unicloud-portal
+    # 如果需要查看日志，可以添加日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
