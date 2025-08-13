@@ -211,7 +211,7 @@ const ServiceModules: React.FC = () => {
   const [moduleItems, setModuleItems] = useState<ModuleItemsType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  
+
   const router = useRouter();
 
   // 使用zustand管理用户状态
@@ -368,7 +368,7 @@ const ServiceModules: React.FC = () => {
     setIsLoginModalOpen(false);
   };
 
-  const {message} = App.useApp();
+  const { message } = App.useApp();
 
   const handleItemClick = async (item: ModuleItemsType) => {
     console.log(`Clicked on ${item.label}`, item);
@@ -380,7 +380,7 @@ const ServiceModules: React.FC = () => {
       return;
     }
 
-    async function handlePermissionNavigate(appName: string) {
+    async function handlePermissionNavigate(appName: string, label: string) {
       const appUserInfo = appUserInfoList?.find(info => info.appName === appName);
       if (appUserInfo) {
         if (appUserInfo.flag) {
@@ -388,20 +388,30 @@ const ServiceModules: React.FC = () => {
             const userId = appUserInfo.userInfo?.id ?? 1;
             const token = localStorage.getItem('userToken');
 
+            let mockUrl = ''
+            if (appName == '会诊') {
+              mockUrl = 'http://localhost:3001'
+              if (label == '病理直播间') {
+                mockUrl = 'http://localhost:3002'
+              }
+            } else if (appName == 'AI') {
+              mockUrl = 'http://localhost:8888'
+            } else if (appName == '分子') {
+              mockUrl = 'http://localhost:5000'
+            }
+
+            if (appName == 'AI') {
+              // AI 是 vue 的SPA 前端项目，无法使用jwt，只能传递token和userId
+              const auth_linkUrl = `${mockUrl}?portaltoken=${token}&userId=${userId}&sso=1`;
+              window.open(auth_linkUrl, '_blank');
+              return;
+            }
+
             // 调用 Next.js API 路由生成签名的 token
             const ssoTokenResponse = await PortalAPI.generateSSOToken(userId, token || '');
 
             if (ssoTokenResponse.success) {
               const signedToken = ssoTokenResponse.data;
-
-              let mockUrl = ''
-              if (appName == '会诊') {
-                mockUrl = 'http://localhost:3001'
-              } else if (appName == 'AI') {
-                mockUrl = 'http://localhost:8888'
-              } else if (appName == '分子') {
-                mockUrl = 'http://localhost:5000'
-              }
 
               const auth_linkUrl = `${mockUrl}?portaltoken=${signedToken}&userId=${userId}&sso=1`;
               window.open(auth_linkUrl, '_blank');
@@ -430,7 +440,7 @@ const ServiceModules: React.FC = () => {
       return false;
     }
 
-    const diagnosisAppNameArr = ['病理远程会诊'];
+    const diagnosisAppNameArr = ['病理远程会诊', '病理直播间'];
     const aiAppNameArr = ['智能辅助诊断', '胃肠肺'];
     const deliveryAppNameArr = ['区域标本送检'];
 
@@ -439,13 +449,13 @@ const ServiceModules: React.FC = () => {
       const itemLabel = item.label ?? '';
       if (diagnosisAppNameArr.includes(itemLabel)) {
         const appName = '会诊';
-        handlePermissionNavigate(appName);
+        handlePermissionNavigate(appName, itemLabel);
       } else if (aiAppNameArr.includes(itemLabel)) {
         const appName = 'AI';
-        handlePermissionNavigate(appName);
+        handlePermissionNavigate(appName, itemLabel);
       } else if (deliveryAppNameArr.includes(itemLabel)) {
         const appName = '分子';
-        handlePermissionNavigate(appName);
+        handlePermissionNavigate(appName, itemLabel);
       } else {
         // 其他模块直接跳转
         window.open(item.itemModel.linkUrl, '_blank');

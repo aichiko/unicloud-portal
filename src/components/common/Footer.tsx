@@ -4,9 +4,17 @@ import Image from 'next/image';
 import OfficialImg from '@/assets/official_scan.jpg';
 import VideoImg from '@/assets/video_scan.png';
 
-
 const { Footer: AntdFooter } = Layout;
 const { Title, Text } = Typography;
+
+function FooterDivider({ isPrimary = false }: { isPrimary?: boolean } ) {
+  return (
+    <div className={`flex flex-row justify-start items-center bg-[#2769AF] ${isPrimary ? 'w-30' : 'w-24'} my-5`}>
+      <div className='w-7 bg-[#B83531]  h-0.5' />
+      <div className='bg-[#2769AF] h-0.5' />
+    </div>
+  );
+}
 
 function Footer() {
   return (
@@ -21,21 +29,23 @@ function Footer() {
             {/* 公司信息 */}
             <Col xs={24} lg={16}>
               <div className="space-y-6">
-                <Title level={3} className="mb-6" style={{ color: '#ffffff' }}>
-                  武汉优云医疗科技有限公司
+                <Title level={3} className="mb-6" style={{ color: '#ffffff', fontSize: 24 }}>
+                  武汉优云智能医疗科技有限公司
                 </Title>
+
+                <FooterDivider isPrimary />
                 
-                <div className="space-y-3">
+                <div className="space-y-3 pt-6">
                   <div className="flex">
-                    <Text className="w-16" style={{ color: '#d1d5db' }}>地址：</Text>
+                    <Text className="w-12" style={{ color: '#d1d5db' }}>地址：</Text>
                     <Text style={{ color: '#d1d5db' }}>武汉市高科医疗器械园B区22栋3层</Text>
                   </div>
                   <div className="flex">
-                    <Text className="w-16" style={{ color: '#d1d5db' }}>电话：</Text>
+                    <Text className="w-12" style={{ color: '#d1d5db' }}>电话：</Text>
                     <Text style={{ color: '#d1d5db' }}>027-59320986</Text>
                   </div>
                   <div className="flex">
-                    <Text className="w-16" style={{ color: '#d1d5db' }}>邮编：</Text>
+                    <Text className="w-12" style={{ color: '#d1d5db' }}>邮编：</Text>
                     <Text style={{ color: '#d1d5db' }}>430000</Text>
                   </div>
                 </div>
@@ -45,11 +55,13 @@ function Footer() {
             {/* 关注我们 */}
             <Col xs={24} lg={8}>
               <div className="space-y-6">
-                <Title level={3} className="mb-6" style={{ color: '#ffffff' }}>
+                <Title level={3} className="mb-6" style={{ color: '#ffffff', fontSize: 24 }}>
                   关注我们
                 </Title>
                 
-                <div className="flex space-x-6">
+                <FooterDivider />
+
+                <div className="flex space-x-12 pt-6">
                   <div className="text-center">
                     <div className="w-24 h-24 mb-3 border border-gray-600 rounded hover:scale-110 transition-transform duration-300">
                       <Image 
