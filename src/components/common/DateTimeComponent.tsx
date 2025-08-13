@@ -19,8 +19,6 @@ function DateTimeComponent({
   }
 
   if (dateString) {
-    logger.info('Input dateString:', dateString, 'with format:', dateFormat);
-    
     // 尝试多种格式解析
     let parsedDate;
     if (dateFormat) {
@@ -30,10 +28,7 @@ function DateTimeComponent({
       // 自动解析
       parsedDate = dayjs(dateString);
     }
-    
-    logger.info('Parsed Date object:', parsedDate.toDate());
-    logger.info('Is valid:', parsedDate.isValid());
-    
+
     if (parsedDate.isValid()) {
       date = parsedDate.toDate();
     } else {

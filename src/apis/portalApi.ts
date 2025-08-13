@@ -7,11 +7,11 @@ const PortalAPI = {
   getTitleList: async () => {
     const response = await request.get('/prod-api/website/title/list');
     const { code, msg, rows } = response.data as ApiListResponse<PortalTitleModel>;
-      if (code === 200) {
-        return rows;
-      } else {
-        throw new Error(msg);
-      }
+    if (code === 200) {
+      return rows;
+    } else {
+      throw new Error(msg);
+    }
   },
 
   /**
@@ -28,7 +28,7 @@ const PortalAPI = {
       throw new Error(msg);
     }
   },
-  
+
   /**
    * 获取门户新闻列表
    * @param pageNum 页码
@@ -39,11 +39,11 @@ const PortalAPI = {
       params: { pageNum, pageSize }
     });
     const { code, msg, rows, total } = response.data as ApiListResponse<PortalNewsModel>;
-      if (code === 200) {
-        return { rows, total, code, msg };
-      } else {
-        throw new Error(msg);
-      }
+    if (code === 200) {
+      return { rows, total, code, msg };
+    } else {
+      throw new Error(msg);
+    }
   },
 
   /**
@@ -87,13 +87,26 @@ const PortalAPI = {
    * 登录成功的用户信息
    */
   portalLogin: async (username: string, password: string) => {
-    const response = await request.post('/prod-api/login', {
+    const response = await request.post('/prod-api/combination/login', {
       username,
       password
     });
-    const { code, msg, data } = response.data as ApiResponse<string>;
+    const { code, msg, data } = response.data as ApiResponse<PortalLoginData>;
     if (code === 200) {
       return data;
+    } else {
+      throw new Error(msg);
+    }
+  },
+
+  /**
+   * 用户登出
+   */
+  portalLogout: async (token: string) => {
+    const response = await request.post('/prod-api/combination/logout', { token });
+    const { code, msg } = response.data as ApiResponse<string>;
+    if (code === 200) {
+      return true;
     } else {
       throw new Error(msg);
     }
@@ -107,7 +120,35 @@ const PortalAPI = {
     } else {
       throw new Error(msg);
     }
-  }
+  },
+
+  /**
+   * 生成 SSO 签名 token（调用 Next.js API 路由）
+   */
+  generateSSOToken: async (userId: number, token: string) => {
+    try {
+      const response = await fetch('/api/generateSSOToken', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          token
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('生成 SSO token 失败:', error);
+      throw error;
+    }
+  },
 
 };
 

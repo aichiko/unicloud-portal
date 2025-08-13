@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { use } from 'react';
 import { Modal, Input, Button, Form, App } from 'antd';
 import { UserOutlined, LockOutlined, CloseOutlined } from '@ant-design/icons';
 import PortalAPI from '@/apis/portalApi';
@@ -22,29 +22,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, onCancel, onSuccess }) =>
       console.log('登录信息:', values);
 
       // 调用登录API
-      // const token = await PortalAPI.portalLogin(values.username, values.password);
-      const token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImxvZ2luX3VzZXJfa2V5IjoiODg2NWI0MDUtNDY4Yy00MjllLTgyYzktNjZlN2FkOTM2MzM2In0.hZYb2aZzYEHz9DVfl2bC6A-B-xOjH2QdQQOoQiWpNCdf3q7n2RVG85NvSMc2KJDe6vPM58LAHw4Vilir2cci7w'
-      logger.info('登录结果:', token);
-
-      // 设置请求头Authorization
-      setUserAuth(token);
+      const userInfoData = await PortalAPI.portalLogin(values.username, values.password);
+      logger.main.info('登录结果:', userInfoData);
 
       // 获取用户信息
-      // const userInfo = await PortalAPI.portalGetUserInfo();
-      const userInfo = {
-        username: values.username,
-        email: `${values.username}@example.com`,
-        id: Date.now()
-      }
-      // logger.info('用户信息:', userInfo);
+      const userInfoArr = userInfoData.appUserInfoList;
+
+      logger.main.info('用户信息:', userInfoArr);
+      const token = userInfoData.token;
 
       // 使用zustand保存登录状态和用户信息
       login(token, {
-        username: userInfo.username,
-        email: userInfo.email,
-        id: userInfo.id,
-        // 可以添加更多从userInfo获取的字段
-      });
+        username: values.username,
+      }, userInfoArr);
 
       message.success('登录成功！');
 

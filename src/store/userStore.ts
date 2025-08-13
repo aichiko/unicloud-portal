@@ -2,9 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface UserInfo {
-  id: number;
   username: string;
-  email: string;
+  email?: string;
   // 根据PortalUserModel添加的字段
   createTime?: string;
   updateTime?: string;
@@ -15,9 +14,10 @@ interface UserState {
   isLoggedIn: boolean;
   userToken: string | null;
   userInfo: UserInfo | null;
-  
+  appUserInfoList: PortalAppUserInfo[] | null;
+
   // Actions
-  login: (token: string, userInfo: UserInfo) => void;
+  login: (token: string, userInfo: UserInfo, appUserInfoList: PortalAppUserInfo[]) => void;
   logout: () => void;
   setUserInfo: (userInfo: UserInfo) => void;
   initializeAuth: () => void;
@@ -29,17 +29,20 @@ export const useUserStore = create<UserState>()(
       isLoggedIn: false,
       userToken: null,
       userInfo: null,
+      appUserInfoList: null,
 
-      login: (token: string, userInfo: UserInfo) => {
+      login: (token: string, userInfo: UserInfo, appUserInfoList: PortalAppUserInfo[]) => {
         // 保存到localStorage
         localStorage.setItem('userToken', token);
         localStorage.setItem('userInfo', JSON.stringify(userInfo));
-        
+        localStorage.setItem('appUserInfoList', JSON.stringify(appUserInfoList));
+
         // 更新状态
         set({
           isLoggedIn: true,
           userToken: token,
           userInfo: userInfo,
+          appUserInfoList: appUserInfoList,
         });
       },
 
@@ -47,12 +50,14 @@ export const useUserStore = create<UserState>()(
         // 清除localStorage
         localStorage.removeItem('userToken');
         localStorage.removeItem('userInfo');
-        
+        localStorage.removeItem('appUserInfoList');
+
         // 重置状态
         set({
           isLoggedIn: false,
           userToken: null,
           userInfo: null,
+          appUserInfoList: null,
         });
       },
 
@@ -65,13 +70,21 @@ export const useUserStore = create<UserState>()(
         try {
           const token = localStorage.getItem('userToken');
           const userInfoStr = localStorage.getItem('userInfo');
-          
+          const appUserInfoListStr = localStorage.getItem('appUserInfoList');
+
+          let appUserInfoList: PortalAppUserInfo[] | null = null;
+
+          if (appUserInfoListStr) {
+            appUserInfoList = JSON.parse(appUserInfoListStr);
+          }
+
           if (token && userInfoStr) {
             const userInfo = JSON.parse(userInfoStr);
             set({
               isLoggedIn: true,
               userToken: token,
               userInfo: userInfo,
+              appUserInfoList: appUserInfoList,
             });
           } else {
             // 如果没有有效的登录信息，确保状态是清空的
@@ -79,6 +92,7 @@ export const useUserStore = create<UserState>()(
               isLoggedIn: false,
               userToken: null,
               userInfo: null,
+              appUserInfoList: null,
             });
           }
         } catch (error) {
@@ -88,6 +102,7 @@ export const useUserStore = create<UserState>()(
             isLoggedIn: false,
             userToken: null,
             userInfo: null,
+            appUserInfoList: null,
           });
         }
       },
@@ -99,6 +114,7 @@ export const useUserStore = create<UserState>()(
         userToken: state.userToken,
         userInfo: state.userInfo,
         isLoggedIn: state.isLoggedIn,
+        appUserInfoList: state.appUserInfoList,
       }),
     }
   )
