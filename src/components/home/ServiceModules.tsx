@@ -215,7 +215,7 @@ const ServiceModules: React.FC = () => {
   const router = useRouter();
 
   // 使用zustand管理用户状态
-  const { isLoggedIn, initializeAuth, appUserInfoList } = useUserStore();
+  const { isLoggedIn, initializeAuth, appUserInfoList, logout, userInfo } = useUserStore();
 
   // 添加CSS动画样式
   useEffect(() => {
@@ -370,6 +370,69 @@ const ServiceModules: React.FC = () => {
 
   const { message } = App.useApp();
 
+
+
+  async function handlePermissionNavigate(linkUrl: string, appName: string, label?: string) {
+    const appUserInfo = appUserInfoList?.find(info => info.appName === appName);
+    if (appUserInfo) {
+      if (appUserInfo.flag) {
+        try {
+          const userId = appUserInfo.userInfo?.id ?? 1;
+          const token = localStorage.getItem('userToken');
+
+          // let mockUrl = ''
+          // if (appName == '会诊') {
+          //   mockUrl = 'http://localhost:3001'
+          //   if (label == '病理直播间') {
+          //     mockUrl = 'http://localhost:3002'
+          //   }
+          // } else if (appName == 'AI') {
+          //   mockUrl = 'http://localhost:8888'
+          // } else if (appName == '分子') {
+          //   mockUrl = 'http://localhost:5000'
+          // }
+
+          if (appName == 'AI') {
+            // AI 是 vue 的SPA 前端项目，无法使用jwt，只能传递token和userId
+            const auth_linkUrl = `${linkUrl}?portaltoken=${token}&userId=${userId}&sso=1`;
+            window.open(auth_linkUrl, '_blank');
+            return;
+          }
+
+          // 调用 Next.js API 路由生成签名的 token
+          const ssoTokenResponse = await PortalAPI.generateSSOToken(userId, token || '');
+
+          if (ssoTokenResponse.success) {
+            const signedToken = ssoTokenResponse.data;
+
+            const auth_linkUrl = `${linkUrl}?portaltoken=${signedToken}&userId=${userId}&sso=1`;
+            window.open(auth_linkUrl, '_blank');
+          } else {
+            console.error('生成 SSO token 失败:', ssoTokenResponse.error);
+            // 可以在这里显示错误提示给用户
+            message.error('生成 SSO token 失败');
+          }
+        } catch (error) {
+          console.error('生成 SSO token 失败:', error);
+          // 可以在这里显示错误提示给用户
+          message.error('生成 SSO token 失败');
+        }
+      } else {
+        console.warn('用户无权限访问该模块');
+        // 跳转到无权限页面
+        router.push('/unauthorized');
+        // window.open('/unauthorized', '_blank');
+      }
+    } else {
+      // 未找到对应的应用信息，也认为是无权限
+      console.warn(`未找到${appName}应用信息，用户无权限访问该模块`);
+      // window.open('/unauthorized', '_blank');
+      router.push('/unauthorized');
+    }
+    return false;
+  }
+
+
   const handleItemClick = async (item: ModuleItemsType) => {
     console.log(`Clicked on ${item.label}`, item);
 
@@ -380,86 +443,44 @@ const ServiceModules: React.FC = () => {
       return;
     }
 
-    async function handlePermissionNavigate(linkUrl: string, appName: string, label?: string) {
-      const appUserInfo = appUserInfoList?.find(info => info.appName === appName);
-      if (appUserInfo) {
-        if (appUserInfo.flag) {
-          try {
-            const userId = appUserInfo.userInfo?.id ?? 1;
-            const token = localStorage.getItem('userToken');
-
-            // let mockUrl = ''
-            // if (appName == '会诊') {
-            //   mockUrl = 'http://localhost:3001'
-            //   if (label == '病理直播间') {
-            //     mockUrl = 'http://localhost:3002'
-            //   }
-            // } else if (appName == 'AI') {
-            //   mockUrl = 'http://localhost:8888'
-            // } else if (appName == '分子') {
-            //   mockUrl = 'http://localhost:5000'
-            // }
-
-            if (appName == 'AI') {
-              // AI 是 vue 的SPA 前端项目，无法使用jwt，只能传递token和userId
-              const auth_linkUrl = `${linkUrl}?portaltoken=${token}&userId=${userId}&sso=1`;
-              window.open(auth_linkUrl, '_blank');
-              return;
-            }
-
-            // 调用 Next.js API 路由生成签名的 token
-            const ssoTokenResponse = await PortalAPI.generateSSOToken(userId, token || '');
-
-            if (ssoTokenResponse.success) {
-              const signedToken = ssoTokenResponse.data;
-
-              const auth_linkUrl = `${linkUrl}?portaltoken=${signedToken}&userId=${userId}&sso=1`;
-              window.open(auth_linkUrl, '_blank');
-            } else {
-              console.error('生成 SSO token 失败:', ssoTokenResponse.error);
-              // 可以在这里显示错误提示给用户
-              message.error('生成 SSO token 失败');
-            }
-          } catch (error) {
-            console.error('生成 SSO token 失败:', error);
-            // 可以在这里显示错误提示给用户
-            message.error('生成 SSO token 失败');
-          }
-        } else {
-          console.warn('用户无权限访问该模块');
-          // 跳转到无权限页面
-          router.push('/unauthorized');
-          // window.open('/unauthorized', '_blank');
-        }
-      } else {
-        // 未找到对应的应用信息，也认为是无权限
-        console.warn(`未找到${appName}应用信息，用户无权限访问该模块`);
-        // window.open('/unauthorized', '_blank');
-        router.push('/unauthorized');
-      }
-      return false;
+    // 验证token
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      message.error('未登录或登录已过期');
+      logout();
+      setIsLoginModalOpen(true);
+      return;
     }
 
-    const diagnosisAppNameArr = ['病理远程会诊', '病理直播间'];
-    const aiAppNameArr = ['智能辅助诊断', '胃肠肺'];
-    const deliveryAppNameArr = ['区域标本送检'];
+    try {
+      await PortalAPI.validateToken(token, userInfo?.username)
 
-    // 已登录，执行原有逻辑
-    if (item.itemModel.linkUrl) {
-      const itemLabel = item.label ?? '';
-      if (diagnosisAppNameArr.includes(itemLabel)) {
-        const appName = '会诊';
-        handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
-      } else if (aiAppNameArr.includes(itemLabel)) {
-        const appName = 'AI';
-        handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
-      } else if (deliveryAppNameArr.includes(itemLabel)) {
-        const appName = '分子';
-        handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
-      } else {
-        // 其他模块直接跳转
-        window.open(item.itemModel.linkUrl, '_blank');
+      const diagnosisAppNameArr = ['病理远程会诊', '病理直播间'];
+      const aiAppNameArr = ['智能辅助诊断', '胃肠肺', '病理质控考核'];
+      const deliveryAppNameArr = ['区域标本送检'];
+
+      // 已登录，执行原有逻辑
+      if (item.itemModel.linkUrl) {
+        const itemLabel = item.label ?? '';
+        if (diagnosisAppNameArr.includes(itemLabel)) {
+          const appName = '会诊';
+          handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
+        } else if (aiAppNameArr.includes(itemLabel)) {
+          const appName = 'AI';
+          handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
+        } else if (deliveryAppNameArr.includes(itemLabel)) {
+          const appName = '分子';
+          handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
+        } else {
+          // 其他模块直接跳转
+          window.open(item.itemModel.linkUrl, '_blank');
+        }
       }
+    } catch (error: any) {
+      console.error('验证token失败:', error);
+      message.error(error.message ?? '验证token失败');
+      logout();
+      setIsLoginModalOpen(true);
     }
   };
 

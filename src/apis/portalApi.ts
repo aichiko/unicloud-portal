@@ -150,6 +150,17 @@ const PortalAPI = {
     }
   },
 
+  // /combination/validateToken
+  validateToken: async (token: string, username?: string) => {
+    const response = await request.post('/prod-api/combination/validateToken', { token, username });
+    const { code, msg } = response.data as ApiResponse<string>;
+    if (code === 200) {
+      return true;
+    } else {
+      throw new Error(msg);
+    }
+  }
+
 };
 
 export default PortalAPI;
