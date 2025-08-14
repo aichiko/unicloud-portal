@@ -25,7 +25,8 @@ function Page() {
           {/* 上半部分 */}
           <Row gutter={[32, 32]} className="mb-8" style={{
             backgroundColor: '#FFFFFF',
-            minHeight: '600px'
+            minHeight: '488px',
+            maxHeight: '600px'
           }}>
             {/* 左侧：通知公告（大区域） */}
             <Col xs={24} lg={12}>
@@ -41,7 +42,8 @@ function Page() {
           {/* 下半部分 */}
           <Row gutter={[32, 32]} style={{
             backgroundColor: '#FFFFFF',
-            minHeight: '600px'
+            minHeight: '488px',
+            maxHeight: '600px'
           }}>
             {/* 左侧：行业动态 */}
             <Col xs={24} lg={12}>
