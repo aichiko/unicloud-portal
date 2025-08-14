@@ -380,7 +380,7 @@ const ServiceModules: React.FC = () => {
       return;
     }
 
-    async function handlePermissionNavigate(appName: string, label: string) {
+    async function handlePermissionNavigate(linkUrl: string, appName: string, label?: string) {
       const appUserInfo = appUserInfoList?.find(info => info.appName === appName);
       if (appUserInfo) {
         if (appUserInfo.flag) {
@@ -388,21 +388,21 @@ const ServiceModules: React.FC = () => {
             const userId = appUserInfo.userInfo?.id ?? 1;
             const token = localStorage.getItem('userToken');
 
-            let mockUrl = ''
-            if (appName == '会诊') {
-              mockUrl = 'http://localhost:3001'
-              if (label == '病理直播间') {
-                mockUrl = 'http://localhost:3002'
-              }
-            } else if (appName == 'AI') {
-              mockUrl = 'http://localhost:8888'
-            } else if (appName == '分子') {
-              mockUrl = 'http://localhost:5000'
-            }
+            // let mockUrl = ''
+            // if (appName == '会诊') {
+            //   mockUrl = 'http://localhost:3001'
+            //   if (label == '病理直播间') {
+            //     mockUrl = 'http://localhost:3002'
+            //   }
+            // } else if (appName == 'AI') {
+            //   mockUrl = 'http://localhost:8888'
+            // } else if (appName == '分子') {
+            //   mockUrl = 'http://localhost:5000'
+            // }
 
             if (appName == 'AI') {
               // AI 是 vue 的SPA 前端项目，无法使用jwt，只能传递token和userId
-              const auth_linkUrl = `${mockUrl}?portaltoken=${token}&userId=${userId}&sso=1`;
+              const auth_linkUrl = `${linkUrl}?portaltoken=${token}&userId=${userId}&sso=1`;
               window.open(auth_linkUrl, '_blank');
               return;
             }
@@ -413,7 +413,7 @@ const ServiceModules: React.FC = () => {
             if (ssoTokenResponse.success) {
               const signedToken = ssoTokenResponse.data;
 
-              const auth_linkUrl = `${mockUrl}?portaltoken=${signedToken}&userId=${userId}&sso=1`;
+              const auth_linkUrl = `${linkUrl}?portaltoken=${signedToken}&userId=${userId}&sso=1`;
               window.open(auth_linkUrl, '_blank');
             } else {
               console.error('生成 SSO token 失败:', ssoTokenResponse.error);
@@ -449,13 +449,13 @@ const ServiceModules: React.FC = () => {
       const itemLabel = item.label ?? '';
       if (diagnosisAppNameArr.includes(itemLabel)) {
         const appName = '会诊';
-        handlePermissionNavigate(appName, itemLabel);
+        handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
       } else if (aiAppNameArr.includes(itemLabel)) {
         const appName = 'AI';
-        handlePermissionNavigate(appName, itemLabel);
+        handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
       } else if (deliveryAppNameArr.includes(itemLabel)) {
         const appName = '分子';
-        handlePermissionNavigate(appName, itemLabel);
+        handlePermissionNavigate(item.itemModel.linkUrl, appName, itemLabel);
       } else {
         // 其他模块直接跳转
         window.open(item.itemModel.linkUrl, '_blank');
