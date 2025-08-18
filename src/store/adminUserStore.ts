@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AdminUserInfo, AdminUser } from '../../types/AdminTypes';
 
 interface AdminState {
   isLoggedIn: boolean;

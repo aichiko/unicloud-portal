@@ -127,6 +127,7 @@ interface PortalNewsModel {
   newsType?: string;
   isHot?: number;
   sortOrder?: number;
+  /// 0 未发布 1 已发布 2 草稿
   status?: string;
   linkUrl?: string;
   createTime?: string;

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { HomeOutlined, SettingOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined, RobotOutlined, LogoutOutlined, UserOutlined, SettingOutlined } from "@ant-design/icons";
 import { MenuDataItem, ProLayout } from "@ant-design/pro-components";
 import { Button, Modal, Dropdown, Avatar, Space, Typography, message } from "antd";
 import type { MenuProps } from 'antd';
@@ -17,6 +17,33 @@ const menuDataItems: MenuDataItem[] = [
     path: '/admin',
     name: '首页',
     icon: <HomeOutlined />,
+  },
+  {
+    path: 'admin/portalConfig',
+    name: '门户配置',
+    icon: <RobotOutlined />,
+    children: [
+      {
+        path: 'news',
+        name: '行业动态',
+        icon: <HomeOutlined />,
+      },
+      {
+        path: 'notice',
+        name: '通知公告',
+        icon: <SettingOutlined />,
+      },
+      {
+        path: 'cards',
+        name: '卡片内容',
+        icon: <HomeOutlined />,
+      },
+      {
+        path: 'policy',
+        name: '政策设置',
+        icon: <SettingOutlined />,
+      }
+    ]
   },
   {
     path: '/admin/config',
@@ -123,7 +150,7 @@ function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
         }
       }}
       location={{ pathname }}
-      layout='top'
+      layout='mix'
       menu={{
         defaultOpenAll: true,
         request: async () => menuDataItems,

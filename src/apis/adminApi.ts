@@ -1,14 +1,11 @@
-import { AdminUserInfo } from '../../types/AdminTypes';
 import request from './request';
 
-
-interface CaptchaImageData {
-  img: string;
-  msg: string;
-  uuid: string;
-  code: number;
-  captchaEnabled: boolean;
-}
+// 新闻列表接口
+const newsListApi = '/prod-api/website/news/list';
+// GET 新闻详情接口 DELETE 删除新闻接口
+const newsDetailApi = '/prod-api/website/news/:id';
+// PUT 是更新 POST 是新增
+const updateNewsApi = '/prod-api/website/news';
 
 const AdminAPI = {
   /**
@@ -16,7 +13,7 @@ const AdminAPI = {
    */
   getCaptchaImage: async () => {
     const res = await request.get('/prod-api/captchaImage');
-    const resData = res.data as CaptchaImageData;
+    const resData = res.data as AdminCaptchaImageModel;
     return resData;
   },
 
@@ -47,6 +44,47 @@ const AdminAPI = {
       }
     });
     return res.data as AdminUserInfo;
+  },
+
+
+  /** 新闻相关接口 */
+  news: {
+    /**
+     * 获取新闻列表
+     */
+    getList: async (params: { pageNum: number; pageSize: number }) => {
+      const res = await request.get(newsListApi, { params });
+      return res.data as ApiListResponse<PortalNewsModel>;
+    },
+
+    /**
+     * 获取新闻详情
+     */
+    getDetail: async (id: number) => {
+      const res = await request.get(newsDetailApi.replace(':id', id.toString()));
+      return res.data as ApiResponse<PortalNewsModel>;
+    },
+
+    create: async (data: AdminNewsParams) => {
+      const res = await request.post(updateNewsApi, data);
+      return res.data as ApiResponse<null>;
+    },
+
+    /**
+     * 更新新闻
+     */
+    update: async (data: AdminNewsParams) => {
+      const res = await request.put(updateNewsApi, data);
+      return res.data as ApiResponse<null>;
+    },
+
+    /**
+     * 删除新闻
+     */
+    delete: async (id: number) => {
+      const res = await request.delete(newsDetailApi.replace(':id', id.toString()));
+      return res.data as ApiResponse<null>;
+    }
   }
 }
 
