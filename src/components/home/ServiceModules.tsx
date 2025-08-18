@@ -384,18 +384,18 @@ const ServiceModules: React.FC = () => {
           const isDev = process.env.NODE_ENV === 'development';
 
           let mockLinkUrl = linkUrl;
-          // if (isDev) {
-          //   if (appName == '会诊') {
-          //     mockLinkUrl = 'http://localhost:3001'
-          //     if (label == '病理直播间') {
-          //       mockLinkUrl = 'http://localhost:3002'
-          //     }
-          //   } else if (appName == 'AI') {
-          //     mockLinkUrl = 'http://localhost:8888'
-          //   } else if (appName == '分子') {
-          //     mockLinkUrl = 'http://localhost:5000'
-          //   }
-          // }
+          if (isDev) {
+            if (appName == '会诊') {
+              mockLinkUrl = 'http://localhost:3001'
+              if (label == '病理直播间') {
+                mockLinkUrl = 'http://localhost:3002'
+              }
+            } else if (appName == 'AI') {
+              mockLinkUrl = 'http://localhost:8888'
+            } else if (appName == '分子') {
+              mockLinkUrl = 'http://localhost:5000'
+            }
+          }
           if (appName == 'AI' || appName == 'QC') {
             // AI 是 vue 的SPA 前端项目，无法使用jwt，只能传递token和userId
             const auth_linkUrl = `${isDev ? mockLinkUrl : linkUrl}?portaltoken=${token}&userId=${userId}&sso=1`;

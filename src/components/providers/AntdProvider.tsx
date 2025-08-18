@@ -20,6 +20,7 @@ function AntdComponents({ children }: { children: React.ReactNode }) {
         token: {
           // #0b45a1 #4169e1 #242BA0
           colorPrimary: '#2769AF',
+          
         },
         components: {
           Layout: {

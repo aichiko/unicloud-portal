@@ -39,10 +39,10 @@ export default function PoliciesPage() {
       <div className="py-8">
         <ListView<PortalPolicyModel>
           title={policyAlt}
-          icon={<FileProtectOutlined style={{ fontSize: '24px', color: '#dc2626' }} />}
-          themeColor="#dc2626"
-          borderColor="#ef4444"
-          tagColor="red"
+          icon={<FileProtectOutlined style={{ fontSize: '24px', color: '#B83531' }} />}
+          themeColor="#B83531"
+          borderColor="#B83531"
+          tagColor="#B83531"
           tagText="政策"
           fetchData={PortalAPI.getPolicyList}
           renderTitle={(item) => item.title}

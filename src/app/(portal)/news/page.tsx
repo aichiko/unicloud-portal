@@ -32,7 +32,7 @@ export default function NewsPage() {
       {/* 顶部宣传图片 */}
       <div className="relative w-full h-128 overflow-hidden">
         <Image
-          src="/top_propaganda_2.png"
+          src="/top_propaganda.jpg"
           alt="行业动态宣传图"
           fill
           className="object-cover"
@@ -46,8 +46,8 @@ export default function NewsPage() {
           title="行业动态"
           icon={<LineChartOutlined style={{ fontSize: '24px', color: '#059669' }} />}
           themeColor="#059669"
-          borderColor="#10b981"
-          tagColor="green"
+          borderColor="#059669"
+          tagColor="#059669"
           tagText="动态"
           fetchData={PortalAPI.getNewsList}
           renderTitle={(item) => item.title}
