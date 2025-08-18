@@ -392,6 +392,8 @@ const ServiceModules: React.FC = () => {
               }
             } else if (appName == 'AI') {
               mockLinkUrl = 'http://localhost:8888'
+            } else if (appName == 'QC') {
+              mockLinkUrl = 'http://localhost:8889'
             } else if (appName == '分子') {
               mockLinkUrl = 'http://localhost:5000'
             }
@@ -461,7 +463,7 @@ const ServiceModules: React.FC = () => {
 
       const diagnosisAppNameArr = ['病理远程会诊', '病理直播间'];
       const aiAppNameArr = ['智能辅助诊断', '胃肠肺'];
-      const qcAppNameArr = ['病理质控考核'];
+      const qcAppNameArr = ['病理质控评价'];
       const deliveryAppNameArr = ['区域标本送检'];
 
       // 已登录，执行原有逻辑
