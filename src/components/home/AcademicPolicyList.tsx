@@ -14,7 +14,7 @@ const AcademicPolicyList: React.FC = () => {
   const fetchPolicies = async () => {
     try {
       setLoading(true);
-      const response = await PortalAPI.getPolicyList(1, 3);
+      const response = await PortalAPI.getAcademicPolicyList(1, 3);
       if (response && response.rows) {
         setPolicies(response.rows);
         if (response.rows.length > 0) {

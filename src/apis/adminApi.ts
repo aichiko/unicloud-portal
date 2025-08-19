@@ -1,4 +1,4 @@
-import request from './request';
+import request from './admin_request';
 
 // 新闻列表接口
 const newsListApi = '/prod-api/website/news/list';
@@ -32,6 +32,14 @@ const AdminAPI = {
     });
     const token = res.data.token;
     return token;
+  },
+
+  /**
+   * 退出登录
+   */
+  adminLogout: async () => {
+    const res = await request.post('/prod-api/logout');
+    return res.data;
   },
 
   /**
@@ -83,6 +91,142 @@ const AdminAPI = {
      */
     delete: async (id: number) => {
       const res = await request.delete(newsDetailApi.replace(':id', id.toString()));
+      return res.data as ApiResponse<null>;
+    }
+  },
+
+  /** 通知相关接口 */
+  notices: {
+    /**
+     * 获取通知列表
+     */
+    getList: async (params: { pageNum: number; pageSize: number }) => {
+      const res = await request.get('/prod-api/website/notice/list', { params });
+      return res.data as ApiListResponse<PortalNoticeModel>;
+    },
+
+    /**
+     * 获取通知详情
+     */
+    getDetail: async (id: number) => {
+      const res = await request.get(`/prod-api/website/notice/${id}`);
+      return res.data as ApiResponse<PortalNoticeModel>;
+    },
+
+    /**
+     * 创建通知
+     */
+    create: async (data: AdminNoticeParams) => {
+      const res = await request.post('/prod-api/website/notice', data);
+      return res.data as ApiResponse<null>;
+    },
+
+    /**
+     * 更新通知
+     */
+    update: async (data: AdminNoticeParams) => {
+      const res = await request.put('/prod-api/website/notice', data);
+      return res.data as ApiResponse<null>;
+    },
+
+    /**
+     * 删除通知
+     */
+    delete: async (id: number) => {
+      const res = await request.delete(`/prod-api/website/notice/${id}`);
+      return res.data as ApiResponse<null>;
+    }
+  },
+
+  /** 卡片内容相关接口 */
+  // /prod-api/website/title
+  cards: {
+    /**
+     * 获取卡片内容
+     */
+    getList: async () => {
+      const params = {
+        type: 'title',
+        pageNum: 1,
+        pageSize: 99999
+      }
+      const res = await request.get('/prod-api/website/title/list', { params });
+      return res.data as ApiListResponse<PortalTitleModel>;
+    },
+
+    /**
+     * 获取卡片详情
+     */
+    getDetail: async (id: number) => {
+      const res = await request.get(`/prod-api/website/title/${id}`);
+      return res.data as ApiResponse<PortalTitleModel>;
+    },
+
+    /**
+     * 创建卡片
+     */
+    create: async (data: AdminCardParams) => {
+      const res = await request.post('/prod-api/website/title', data);
+      return res.data as ApiResponse<null>;
+    },
+
+    /**
+     * 更新卡片
+     */
+    update: async (data: AdminCardParams) => {
+      const res = await request.put('/prod-api/website/title', data);
+      return res.data as ApiResponse<null>;
+    },
+
+    /**
+     * 删除卡片
+     */
+    delete: async (id: number) => {
+      const res = await request.delete(`/prod-api/website/title/${id}`);
+      return res.data as ApiResponse<null>;
+    }
+  },
+
+  // /prod-api/website/policy
+  /** 政策配置相关接口 */
+  policies: {
+    /**
+     * 获取政策列表
+     */
+    getList: async (params: { pageNum: number; pageSize: number }) => {
+      const res = await request.get('/prod-api/website/policy/list', { params: { ...params, type: 'policy' } });
+      return res.data as ApiListResponse<PortalPolicyModel>;
+    },
+
+    /**
+     * 获取政策详情
+     */
+    getDetail: async (id: number) => {
+      const res = await request.get(`/prod-api/website/policy/${id}`);
+      return res.data as ApiResponse<PortalPolicyModel>;
+    },
+
+    /**
+     * 创建政策
+     */
+    create: async (data: AdminPolicyParams) => {
+      const res = await request.post('/prod-api/website/policy', data);
+      return res.data as ApiResponse<null>;
+    },
+
+    /**
+     * 更新政策
+     */
+    update: async (data: AdminPolicyParams) => {
+      const res = await request.put('/prod-api/website/policy', data);
+      return res.data as ApiResponse<null>;
+    },
+
+    /**
+     * 删除政策
+     */
+    delete: async (id: number) => {
+      const res = await request.delete(`/prod-api/website/policy/${id}`);
       return res.data as ApiResponse<null>;
     }
   }

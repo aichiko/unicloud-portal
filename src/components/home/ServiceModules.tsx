@@ -370,8 +370,6 @@ const ServiceModules: React.FC = () => {
 
   const { message } = App.useApp();
 
-
-
   async function handlePermissionNavigate(linkUrl: string, appName: string, label?: string) {
     const appUserInfo = appUserInfoList?.find(info => info.appName === appName);
     if (appUserInfo) {

@@ -2,32 +2,30 @@
 import React, { useRef, useState } from 'react';
 import {
   ProTable,
-  ProForm,
+  ProColumns,
+  ModalForm,
   ProFormText,
   ProFormTextArea,
-  ProFormDateTimePicker,
   ProFormSelect,
   ProFormDigit,
   ActionType,
-  ProColumns,
-  ModalForm,
   ProFormInstance
 } from '@ant-design/pro-components';
 import {
   Button,
-  Space,
   Popconfirm,
-  Tag,
-  Image,
   Tooltip,
   Modal,
-  App
+  App,
+  Space,
+  Tag
 } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  EyeOutlined
+  EyeOutlined,
+  LinkOutlined
 } from '@ant-design/icons';
 import AdminAPI from '@/apis/adminApi';
 import { useAdminUserStore, hasPermission } from '@/store/adminUserStore';
@@ -47,22 +45,22 @@ const MarkdownPreview = dynamic(
   { ssr: false }
 );
 
-const NewsManagement: React.FC = () => {
+const PolicyManagement: React.FC = () => {
   const actionRef = useRef<ActionType>(null);
   const formRef = useRef<ProFormInstance>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<PortalNewsModel | null>(null);
-  const [viewingRecord, setViewingRecord] = useState<PortalNewsModel | null>(null);
+  const [editingRecord, setEditingRecord] = useState<PortalPolicyModel | null>(null);
+  const [viewingRecord, setViewingRecord] = useState<PortalPolicyModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState<string>('');
 
   const { message } = App.useApp();
 
   // 列定义
-  const columns: ProColumns<PortalNewsModel>[] = [
+  const columns: ProColumns<PortalPolicyModel>[] = [
     {
-      title: '标题',
+      title: '政策标题',
       dataIndex: 'title',
       ellipsis: true,
       width: 300,
@@ -73,31 +71,38 @@ const NewsManagement: React.FC = () => {
       ),
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      width: 100,
+      title: '政策类型',
+      dataIndex: 'subType',
+      width: 120,
       render: (_, record) => {
-        const statusMap = {
-          '0': { color: 'default', text: '未发布' },
-          '1': { color: 'success', text: '已发布' },
-          '2': { color: 'warning', text: '草稿' },
+        const typeMap = {
+          'national': { color: 'blue', text: '卫健委政策' },
+          'academic': { color: 'green', text: '学术政策' },
         };
-        const status = statusMap[record.status as keyof typeof statusMap] || statusMap['0'];
-        return <Tag color={status.color}>{status.text}</Tag>;
+        const type = typeMap[record.subType as keyof typeof typeMap];
+        return type ? <Tag color={type.color}>{type.text}</Tag> : <Tag>未分类</Tag>;
       },
       valueEnum: {
-        '0': { text: '未发布', status: 'Default' },
-        '1': { text: '已发布', status: 'Success' },
-        '2': { text: '草稿', status: 'Warning' },
+        'national': { text: '卫健委政策', status: 'Processing' },
+        'academic': { text: '学术政策', status: 'Success' },
       },
     },
     {
-      title: '发布时间',
-      dataIndex: 'publishDate',
-      width: 160,
-      sorter: true,
-      valueType: 'dateTime',
+      title: '链接地址',
+      dataIndex: 'linkUrl',
+      ellipsis: true,
+      width: 250,
       search: false,
+      render: (_, record) => (
+        record.linkUrl ? (
+          <Space>
+            <a href={record.linkUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1890ff' }}>
+              查看原文
+            </a>
+            <LinkOutlined style={{ color: '#1890ff' }} />
+          </Space>
+        ) : '-'
+      ),
     },
     {
       title: '排序',
@@ -105,6 +110,15 @@ const NewsManagement: React.FC = () => {
       width: 80,
       search: false,
       sorter: true,
+      render: (text) => text || 0,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      width: 160,
+      sorter: true,
+      valueType: 'dateTime',
+      search: false,
     },
     {
       title: '操作',
@@ -119,7 +133,7 @@ const NewsManagement: React.FC = () => {
             onClick={() => handleView(record)}
           />
         </Tooltip>,
-        hasPermission('system:news:edit') && (
+        hasPermission('system:policy:edit') && (
           <Tooltip key="edit" title="编辑">
             <Button
               type="link"
@@ -129,10 +143,10 @@ const NewsManagement: React.FC = () => {
             />
           </Tooltip>
         ),
-        hasPermission('system:news:delete') && (
+        hasPermission('system:policy:delete') && (
           <Popconfirm
             key="delete"
-            title="确定要删除这条新闻吗？"
+            title="确定要删除这条政策吗？"
             onConfirm={() => handleDelete(record.id)}
             okText="确定"
             cancelText="取消"
@@ -151,10 +165,10 @@ const NewsManagement: React.FC = () => {
     },
   ];
 
-  // 获取新闻列表
-  const fetchNewsList = async (params: any) => {
+  // 获取政策列表
+  const fetchPoliciesList = async (params: any) => {
     try {
-      const response = await AdminAPI.news.getList({
+      const response = await AdminAPI.policies.getList({
         pageNum: params.current,
         pageSize: params.pageSize,
         ...params,
@@ -166,8 +180,8 @@ const NewsManagement: React.FC = () => {
         total: response.total || 0,
       };
     } catch (error) {
-      console.error('获取新闻列表失败:', error);
-      message.error('获取新闻列表失败');
+      console.error('获取政策列表失败:', error);
+      message.error('获取政策列表失败');
       return {
         data: [],
         success: false,
@@ -185,21 +199,23 @@ const NewsManagement: React.FC = () => {
   };
 
   // 处理编辑
-  const handleEdit = (record: PortalNewsModel) => {
+  const handleEdit = (record: PortalPolicyModel) => {
     setEditingRecord(record);
     setModalVisible(true);
     setContent(record.content || '');
     // 延迟设置表单值，确保modal已经打开
     setTimeout(() => {
       formRef.current?.setFieldsValue({
-        ...record,
-        publishDate: record.publishDate ? dayjs(record.publishDate) : undefined,
+        title: record.title,
+        subType: record.subType,
+        linkUrl: record.linkUrl,
+        sortOrder: record.sortOrder || 0,
       });
     }, 100);
   };
 
   // 处理查看
-  const handleView = (record: PortalNewsModel) => {
+  const handleView = (record: PortalPolicyModel) => {
     setViewingRecord(record);
     setDetailModalVisible(true);
   };
@@ -208,7 +224,7 @@ const NewsManagement: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       setLoading(true);
-      await AdminAPI.news.delete(id);
+      await AdminAPI.policies.delete(id);
       message.success('删除成功');
       actionRef.current?.reload();
     } catch (error) {
@@ -226,17 +242,17 @@ const NewsManagement: React.FC = () => {
       const submitData = {
         ...values,
         content: content, // 使用富文本编辑器的内容
-        publishDate: values.publishDate ? dayjs(values.publishDate).format('YYYY-MM-DD HH:mm:ss') : undefined,
+        type: 'policy', // 固定为 policy 类型
         id: editingRecord?.id,
       };
 
       if (editingRecord) {
         // 编辑
-        await AdminAPI.news.update(submitData);
+        await AdminAPI.policies.update(submitData);
         message.success('更新成功');
       } else {
         // 新增
-        await AdminAPI.news.create(submitData);
+        await AdminAPI.policies.create(submitData);
         message.success('创建成功');
       }
 
@@ -255,11 +271,11 @@ const NewsManagement: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <ProTable<PortalNewsModel>
-        headerTitle="新闻管理"
+      <ProTable<PortalPolicyModel>
+        headerTitle="政策管理"
         actionRef={actionRef}
         columns={columns}
-        request={fetchNewsList}
+        request={fetchPoliciesList}
         rowKey="id"
         pagination={{
           defaultPageSize: 10,
@@ -273,14 +289,14 @@ const NewsManagement: React.FC = () => {
         }}
         dateFormatter="string"
         toolBarRender={() => [
-          hasPermission('system:news:add') && (
+          hasPermission('system:policy:add') && (
             <Button
               key="add"
               type="primary"
               icon={<PlusOutlined />}
               onClick={handleAdd}
             >
-              新增新闻
+              新增政策
             </Button>
           ),
         ].filter(Boolean)}
@@ -295,7 +311,7 @@ const NewsManagement: React.FC = () => {
 
       {/* 新增/编辑模态框 */}
       <ModalForm
-        title={editingRecord ? '编辑新闻' : '新增新闻'}
+        title={editingRecord ? '编辑政策' : '新增政策'}
         open={modalVisible}
         formRef={formRef}
         onOpenChange={setModalVisible}
@@ -312,13 +328,27 @@ const NewsManagement: React.FC = () => {
       >
         <ProFormText
           name="title"
-          label="新闻标题"
-          placeholder="请输入新闻标题"
+          label="政策标题"
+          placeholder="请输入政策标题"
           rules={[
-            { required: true, message: '请输入新闻标题' },
+            { required: true, message: '请输入政策标题' },
             { max: 200, message: '标题长度不能超过200个字符' },
           ]}
         />
+
+        <ProFormSelect
+          name="subType"
+          label="政策类型"
+          placeholder="请选择政策类型"
+          options={[
+            { label: '卫健委政策', value: 'national' },
+            { label: '学术政策', value: 'academic' },
+          ]}
+          rules={[
+            { required: true, message: '请选择政策类型' },
+          ]}
+        />
+
         {/* 富文本编辑器 */}
         <div style={{ marginBottom: 24 }}>
           <label style={{
@@ -328,7 +358,7 @@ const NewsManagement: React.FC = () => {
             color: 'rgba(0, 0, 0, 0.85)',
             fontWeight: 500
           }}>
-            新闻内容 <span style={{ color: '#ff4d4f' }}>*</span>
+            政策内容 <span style={{ color: '#ff4d4f' }}>*</span>
           </label>
           <MDEditor
             value={content}
@@ -341,34 +371,10 @@ const NewsManagement: React.FC = () => {
 
         <ProFormText
           name="linkUrl"
-          label="外部链接"
-          placeholder="请输入外部链接URL"
+          label="链接地址"
+          placeholder="请输入原文链接地址"
           rules={[
             { type: 'url', message: '请输入有效的URL地址' },
-          ]}
-        />
-
-        <ProFormSelect
-          name="status"
-          label="发布状态"
-          placeholder="请选择发布状态"
-          initialValue="2"
-          options={[
-            { label: '未发布', value: '0' },
-            { label: '已发布', value: '1' },
-            { label: '草稿', value: '2' },
-          ]}
-          rules={[
-            { required: true, message: '请选择发布状态' },
-          ]}
-        />
-
-        <ProFormDateTimePicker
-          name="publishDate"
-          label="发布时间"
-          placeholder="请选择发布时间"
-          rules={[
-            { required: true, message: '请选择发布时间' },
           ]}
         />
 
@@ -387,7 +393,7 @@ const NewsManagement: React.FC = () => {
 
       {/* 查看详情模态框 */}
       <Modal
-        title="新闻详情"
+        title="政策详情"
         open={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={[
@@ -395,7 +401,7 @@ const NewsManagement: React.FC = () => {
             关闭
           </Button>,
         ]}
-        width={800}
+        width={900}
       >
         {viewingRecord && (
           <div style={{ padding: '16px 0' }}>
@@ -403,22 +409,28 @@ const NewsManagement: React.FC = () => {
               <strong>标题：</strong>{viewingRecord.title}
             </div>
             <div style={{ marginBottom: 16 }}>
-              <strong>状态：</strong>
-              <Tag color={viewingRecord.status === '1' ? 'green' : viewingRecord.status === '0' ? 'red' : 'orange'}>
-                {viewingRecord.status === '1' ? '已发布' : viewingRecord.status === '0' ? '未发布' : '草稿'}
+              <strong>政策类型：</strong>
+              <Tag color={viewingRecord.subType === 'national' ? 'blue' : 'green'}>
+                {viewingRecord.subType === 'national' ? '卫健委政策' : viewingRecord.subType === 'academic' ? '学术政策' : '未分类'}
               </Tag>
-            </div>
-            <div style={{ marginBottom: 16 }}>
-              <strong>发布时间：</strong>{viewingRecord.publishDate}
             </div>
             {viewingRecord.linkUrl && (
               <div style={{ marginBottom: 16 }}>
-                <strong>外部链接：</strong>
+                <strong>原文链接：</strong>
                 <a href={viewingRecord.linkUrl} target="_blank" rel="noopener noreferrer">
                   {viewingRecord.linkUrl}
                 </a>
               </div>
             )}
+            <div style={{ marginBottom: 16 }}>
+              <strong>排序权重：</strong>{viewingRecord.sortOrder || 0}
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <strong>创建时间：</strong>{viewingRecord.createTime}
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <strong>更新时间：</strong>{viewingRecord.updateTime}
+            </div>
             <div style={{ marginBottom: 16 }}>
               <strong>内容：</strong>
               <div style={{
@@ -426,7 +438,9 @@ const NewsManagement: React.FC = () => {
                 borderRadius: 6,
                 padding: 16,
                 marginTop: 8,
-                background: '#fafafa'
+                background: '#fafafa',
+                maxHeight: 400,
+                overflow: 'auto'
               }}>
                 <MarkdownPreview source={viewingRecord.content || '暂无内容'} />
               </div>
@@ -438,4 +452,4 @@ const NewsManagement: React.FC = () => {
   );
 };
 
-export default NewsManagement;
+export default PolicyManagement;

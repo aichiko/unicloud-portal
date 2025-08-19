@@ -63,6 +63,40 @@ const PortalAPI = {
     }
   },
 
+   /**
+   * 获取门户学术政策列表
+   * @param pageNum 页码
+   * @param pageSize 每页大小
+   */
+  getAcademicPolicyList: async (pageNum: number, pageSize: number) => {
+    const response = await request.get('/prod-api/website/policy/list', {
+      params: { pageNum, pageSize, type: 'policy', subType: 'academic' }
+    });
+    const { code, msg, rows, total } = response.data as ApiListResponse<PortalPolicyModel>;
+    if (code === 200) {
+      return { rows, total, code, msg };
+    } else {
+      throw new Error(msg);
+    }
+  },
+
+   /**
+   * 获取门户卫健委政策列表
+   * @param pageNum 页码
+   * @param pageSize 每页大小
+   */
+  getNationalPolicyList: async (pageNum: number, pageSize: number) => {
+    const response = await request.get('/prod-api/website/policy/list', {
+      params: { pageNum, pageSize, type: 'policy', subType: 'national' }
+    });
+    const { code, msg, rows, total } = response.data as ApiListResponse<PortalPolicyModel>;
+    if (code === 200) {
+      return { rows, total, code, msg };
+    } else {
+      throw new Error(msg);
+    }
+  },
+
   /**
    * 获取门户通知列表
    * @param pageNum 页码

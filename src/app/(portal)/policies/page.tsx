@@ -44,7 +44,7 @@ export default function PoliciesPage() {
           borderColor="#B83531"
           tagColor="#B83531"
           tagText="政策"
-          fetchData={PortalAPI.getPolicyList}
+          fetchData={policyType === 'academic' ? PortalAPI.getAcademicPolicyList : PortalAPI.getNationalPolicyList}
           renderTitle={(item) => item.title}
           renderDate={(item) => item.createTime || ''}
           onItemClick={handleItemClick}

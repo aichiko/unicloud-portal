@@ -29,7 +29,7 @@ const menuDataItems: MenuDataItem[] = [
         icon: <HomeOutlined />,
       },
       {
-        path: 'notice',
+        path: 'notices',
         name: '通知公告',
         icon: <SettingOutlined />,
       },
@@ -39,7 +39,7 @@ const menuDataItems: MenuDataItem[] = [
         icon: <HomeOutlined />,
       },
       {
-        path: 'policy',
+        path: 'policies',
         name: '政策设置',
         icon: <SettingOutlined />,
       }
@@ -151,9 +151,16 @@ function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
       }}
       location={{ pathname }}
       layout='mix'
+      // @ts-ignore
+      setting={{
+        colorPrimary: '#2769AF',
+      }}
       menu={{
         defaultOpenAll: true,
         request: async () => menuDataItems,
+      }}
+      menuProps={{
+        // theme: 'dark',
       }}
       menuItemRender={(item, dom) => (
         <div onClick={() => handleMenuClick(item.path)}>

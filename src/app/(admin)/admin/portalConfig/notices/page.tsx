@@ -5,7 +5,7 @@ import {
   ProForm,
   ProFormText,
   ProFormTextArea,
-  ProFormDateTimePicker,
+  ProFormDatePicker,
   ProFormSelect,
   ProFormDigit,
   ActionType,
@@ -47,30 +47,49 @@ const MarkdownPreview = dynamic(
   { ssr: false }
 );
 
-const NewsManagement: React.FC = () => {
+const NoticeManagement: React.FC = () => {
   const actionRef = useRef<ActionType>(null);
   const formRef = useRef<ProFormInstance>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<PortalNewsModel | null>(null);
-  const [viewingRecord, setViewingRecord] = useState<PortalNewsModel | null>(null);
+  const [editingRecord, setEditingRecord] = useState<PortalNoticeModel | null>(null);
+  const [viewingRecord, setViewingRecord] = useState<PortalNoticeModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState<string>('');
 
   const { message } = App.useApp();
 
   // 列定义
-  const columns: ProColumns<PortalNewsModel>[] = [
+  const columns: ProColumns<PortalNoticeModel>[] = [
     {
-      title: '标题',
-      dataIndex: 'title',
+      title: '通知标题',
+      dataIndex: 'noticeTitle',
       ellipsis: true,
       width: 300,
       render: (_, record) => (
-        <Tooltip title={record.title}>
-          <span>{record.title}</span>
+        <Tooltip title={record.noticeTitle}>
+          <span>{record.noticeTitle}</span>
         </Tooltip>
       ),
+    },
+    {
+      title: '通知类型',
+      dataIndex: 'noticeType',
+      width: 100,
+      render: (_, record) => {
+        const typeMap = {
+          '0': { color: 'red', text: '重要' },
+          '1': { color: 'blue', text: '通知' },
+          '2': { color: 'orange', text: '紧急' },
+        };
+        const type = typeMap[record.noticeType as keyof typeof typeMap] || typeMap['1'];
+        return <Tag color={type.color}>{type.text}</Tag>;
+      },
+      valueEnum: {
+        '0': { text: '重要', status: 'Error' },
+        '1': { text: '通知', status: 'Processing' },
+        '2': { text: '紧急', status: 'Warning' },
+      },
     },
     {
       title: '状态',
@@ -93,18 +112,11 @@ const NewsManagement: React.FC = () => {
     },
     {
       title: '发布时间',
-      dataIndex: 'publishDate',
+      dataIndex: 'publishTime',
       width: 160,
       sorter: true,
-      valueType: 'dateTime',
+      valueType: 'date',
       search: false,
-    },
-    {
-      title: '排序',
-      dataIndex: 'sortOrder',
-      width: 80,
-      search: false,
-      sorter: true,
     },
     {
       title: '操作',
@@ -119,7 +131,7 @@ const NewsManagement: React.FC = () => {
             onClick={() => handleView(record)}
           />
         </Tooltip>,
-        hasPermission('system:news:edit') && (
+        hasPermission('system:notice:edit') && (
           <Tooltip key="edit" title="编辑">
             <Button
               type="link"
@@ -129,11 +141,11 @@ const NewsManagement: React.FC = () => {
             />
           </Tooltip>
         ),
-        hasPermission('system:news:delete') && (
+        hasPermission('system:notice:delete') && (
           <Popconfirm
             key="delete"
-            title="确定要删除这条新闻吗？"
-            onConfirm={() => handleDelete(record.id)}
+            title="确定要删除这条通知吗？"
+            onConfirm={() => handleDelete(record.noticeId)}
             okText="确定"
             cancelText="取消"
           >
@@ -151,10 +163,10 @@ const NewsManagement: React.FC = () => {
     },
   ];
 
-  // 获取新闻列表
-  const fetchNewsList = async (params: any) => {
+  // 获取通知列表
+  const fetchNoticesList = async (params: any) => {
     try {
-      const response = await AdminAPI.news.getList({
+      const response = await AdminAPI.notices.getList({
         pageNum: params.current,
         pageSize: params.pageSize,
         ...params,
@@ -166,8 +178,8 @@ const NewsManagement: React.FC = () => {
         total: response.total || 0,
       };
     } catch (error) {
-      console.error('获取新闻列表失败:', error);
-      message.error('获取新闻列表失败');
+      console.error('获取通知列表失败:', error);
+      message.error('获取通知列表失败');
       return {
         data: [],
         success: false,
@@ -185,21 +197,23 @@ const NewsManagement: React.FC = () => {
   };
 
   // 处理编辑
-  const handleEdit = (record: PortalNewsModel) => {
+  const handleEdit = (record: PortalNoticeModel) => {
     setEditingRecord(record);
     setModalVisible(true);
-    setContent(record.content || '');
+    setContent(record.noticeContent || '');
     // 延迟设置表单值，确保modal已经打开
     setTimeout(() => {
       formRef.current?.setFieldsValue({
-        ...record,
-        publishDate: record.publishDate ? dayjs(record.publishDate) : undefined,
+        noticeTitle: record.noticeTitle,
+        noticeType: record.noticeType,
+        status: record.status,
+        publishTime: record.publishTime ? dayjs(record.publishTime) : undefined,
       });
     }, 100);
   };
 
   // 处理查看
-  const handleView = (record: PortalNewsModel) => {
+  const handleView = (record: PortalNoticeModel) => {
     setViewingRecord(record);
     setDetailModalVisible(true);
   };
@@ -208,7 +222,7 @@ const NewsManagement: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       setLoading(true);
-      await AdminAPI.news.delete(id);
+      await AdminAPI.notices.delete(id);
       message.success('删除成功');
       actionRef.current?.reload();
     } catch (error) {
@@ -225,18 +239,18 @@ const NewsManagement: React.FC = () => {
       setLoading(true);
       const submitData = {
         ...values,
-        content: content, // 使用富文本编辑器的内容
-        publishDate: values.publishDate ? dayjs(values.publishDate).format('YYYY-MM-DD HH:mm:ss') : undefined,
-        id: editingRecord?.id,
+        noticeContent: content, // 使用富文本编辑器的内容
+        publishTime: values.publishTime ? dayjs(values.publishTime).format('YYYY-MM-DD') : undefined,
+        noticeId: editingRecord?.noticeId,
       };
 
       if (editingRecord) {
         // 编辑
-        await AdminAPI.news.update(submitData);
+        await AdminAPI.notices.update(submitData);
         message.success('更新成功');
       } else {
         // 新增
-        await AdminAPI.news.create(submitData);
+        await AdminAPI.notices.create(submitData);
         message.success('创建成功');
       }
 
@@ -255,12 +269,12 @@ const NewsManagement: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <ProTable<PortalNewsModel>
-        headerTitle="新闻管理"
+      <ProTable<PortalNoticeModel>
+        headerTitle="通知管理"
         actionRef={actionRef}
         columns={columns}
-        request={fetchNewsList}
-        rowKey="id"
+        request={fetchNoticesList}
+        rowKey="noticeId"
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
@@ -273,14 +287,14 @@ const NewsManagement: React.FC = () => {
         }}
         dateFormatter="string"
         toolBarRender={() => [
-          hasPermission('system:news:add') && (
+          hasPermission('system:notice:add') && (
             <Button
               key="add"
               type="primary"
               icon={<PlusOutlined />}
               onClick={handleAdd}
             >
-              新增新闻
+              新增通知
             </Button>
           ),
         ].filter(Boolean)}
@@ -295,7 +309,7 @@ const NewsManagement: React.FC = () => {
 
       {/* 新增/编辑模态框 */}
       <ModalForm
-        title={editingRecord ? '编辑新闻' : '新增新闻'}
+        title={editingRecord ? '编辑通知' : '新增通知'}
         open={modalVisible}
         formRef={formRef}
         onOpenChange={setModalVisible}
@@ -311,14 +325,29 @@ const NewsManagement: React.FC = () => {
         }}
       >
         <ProFormText
-          name="title"
-          label="新闻标题"
-          placeholder="请输入新闻标题"
+          name="noticeTitle"
+          label="通知标题"
+          placeholder="请输入通知标题"
           rules={[
-            { required: true, message: '请输入新闻标题' },
+            { required: true, message: '请输入通知标题' },
             { max: 200, message: '标题长度不能超过200个字符' },
           ]}
         />
+
+        <ProFormSelect
+          name="noticeType"
+          label="通知类型"
+          placeholder="请选择通知类型"
+          options={[
+            { label: '重要', value: '0' },
+            { label: '通知', value: '1' },
+            { label: '紧急', value: '2' },
+          ]}
+          rules={[
+            { required: true, message: '请选择通知类型' },
+          ]}
+        />
+
         {/* 富文本编辑器 */}
         <div style={{ marginBottom: 24 }}>
           <label style={{
@@ -328,7 +357,7 @@ const NewsManagement: React.FC = () => {
             color: 'rgba(0, 0, 0, 0.85)',
             fontWeight: 500
           }}>
-            新闻内容 <span style={{ color: '#ff4d4f' }}>*</span>
+            通知内容 <span style={{ color: '#ff4d4f' }}>*</span>
           </label>
           <MDEditor
             value={content}
@@ -338,15 +367,6 @@ const NewsManagement: React.FC = () => {
             visibleDragbar={false}
           />
         </div>
-
-        <ProFormText
-          name="linkUrl"
-          label="外部链接"
-          placeholder="请输入外部链接URL"
-          rules={[
-            { type: 'url', message: '请输入有效的URL地址' },
-          ]}
-        />
 
         <ProFormSelect
           name="status"
@@ -363,31 +383,19 @@ const NewsManagement: React.FC = () => {
           ]}
         />
 
-        <ProFormDateTimePicker
-          name="publishDate"
+        <ProFormDatePicker
+          name="publishTime"
           label="发布时间"
           placeholder="请选择发布时间"
           rules={[
             { required: true, message: '请选择发布时间' },
           ]}
         />
-
-        <ProFormDigit
-          name="sortOrder"
-          label="排序权重"
-          placeholder="请输入排序权重(数字越大越靠前)"
-          min={0}
-          max={9999}
-          initialValue={0}
-          fieldProps={{
-            precision: 0,
-          }}
-        />
       </ModalForm>
 
       {/* 查看详情模态框 */}
       <Modal
-        title="新闻详情"
+        title="通知详情"
         open={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={[
@@ -400,7 +408,13 @@ const NewsManagement: React.FC = () => {
         {viewingRecord && (
           <div style={{ padding: '16px 0' }}>
             <div style={{ marginBottom: 16 }}>
-              <strong>标题：</strong>{viewingRecord.title}
+              <strong>标题：</strong>{viewingRecord.noticeTitle}
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <strong>类型：</strong>
+              <Tag color={viewingRecord.noticeType === '0' ? 'red' : viewingRecord.noticeType === '1' ? 'blue' : 'orange'}>
+                {viewingRecord.noticeType === '0' ? '重要' : viewingRecord.noticeType === '1' ? '通知' : '紧急'}
+              </Tag>
             </div>
             <div style={{ marginBottom: 16 }}>
               <strong>状态：</strong>
@@ -409,16 +423,8 @@ const NewsManagement: React.FC = () => {
               </Tag>
             </div>
             <div style={{ marginBottom: 16 }}>
-              <strong>发布时间：</strong>{viewingRecord.publishDate}
+              <strong>发布时间：</strong>{viewingRecord.publishTime}
             </div>
-            {viewingRecord.linkUrl && (
-              <div style={{ marginBottom: 16 }}>
-                <strong>外部链接：</strong>
-                <a href={viewingRecord.linkUrl} target="_blank" rel="noopener noreferrer">
-                  {viewingRecord.linkUrl}
-                </a>
-              </div>
-            )}
             <div style={{ marginBottom: 16 }}>
               <strong>内容：</strong>
               <div style={{
@@ -428,7 +434,7 @@ const NewsManagement: React.FC = () => {
                 marginTop: 8,
                 background: '#fafafa'
               }}>
-                <MarkdownPreview source={viewingRecord.content || '暂无内容'} />
+                <MarkdownPreview source={viewingRecord.noticeContent || '暂无内容'} />
               </div>
             </div>
           </div>
@@ -438,4 +444,4 @@ const NewsManagement: React.FC = () => {
   );
 };
 
-export default NewsManagement;
+export default NoticeManagement;
