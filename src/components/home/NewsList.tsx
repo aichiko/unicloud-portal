@@ -15,7 +15,9 @@ const NewsList: React.FC = () => {
       setLoading(true);
       const response = await PortalAPI.getNewsList(1, 3);
       if (response && response.rows) {
-        setNews(response.rows);
+        // status == 1 已发布，才会显示
+        const filteredNews = response.rows.filter(item => (item.status ?? '0') == '1');
+        setNews(filteredNews);
       } else {
         throw new Error('API response is empty');
       }
