@@ -134,7 +134,7 @@ function AdminLoginPage() {
       // 跳转到管理后台
       router.push('/admin');
     } catch (error) {
-      message.error('登录失败');
+      message.error(error.message ?? '登录失败');
     }
   };
 }

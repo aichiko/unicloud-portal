@@ -109,6 +109,9 @@ interface AdminLoginResponse {
 }
 
 
+/**
+ * 新闻请求参数模型
+ */
 interface AdminNewsParams {
   id?: number
   title: string;
@@ -122,7 +125,9 @@ interface AdminNewsParams {
   linkUrl?: string;
 }
 
-
+/**
+ * 通知请求参数模型
+ */
 interface AdminNoticeParams {
   noticeId?: number;
   noticeTitle: string;
@@ -132,12 +137,9 @@ interface AdminNoticeParams {
   status?: string;
 }
 
-
-// {"createBy":"","createTime":"2025-05-22 16:00:09","updateBy":"","updateTime":"2025-08-15 11:31:47",
-// "remark":null,"id":16,"name":null,"title":"病理远程会诊","type":"title","subType":null,"slogan":null,
-// "description":"病理远程会诊 ","coverUrl":null,"content":null,"categoryId":null,"sortOrder":1,"getDate":null,
-// "status":null,"linkUrl":"http://113.57.115.197:30001","parentId":"0"}
-
+/**
+ * 卡片请求参数模型
+ */
 interface AdminCardParams {
   id?: number;
   parentId?: number;
@@ -148,11 +150,9 @@ interface AdminCardParams {
   sortOrder?: number;
 }
 
-// {"createBy":"","createTime":"2025-06-06 09:46:50","updateBy":"","updateTime":"2025-07-01 17:08:02","remark":null,"id":36,"name":null,
-// "title":"省人民政府办公厅印发《关于深化改革促进乡村医疗卫生体系健康发展的实施方案》的通知",
-// "type":"policy","subType":null,"slogan":null,"description":null,"coverUrl":null,
-// "content": "<p>123</p>"
-// "categoryId":null,"sortOrder":1,"getDate":null,"status":null,"linkUrl":"http://wjw.hubei.gov.cn/bmdt/ztzl/jkfp/zcwj/202505/t20250515_5651578.shtml","parentId":null}
+/**
+ * 政策请求参数模型
+ */
 interface AdminPolicyParams {
   id?: number;
   title: string;
@@ -163,4 +163,50 @@ interface AdminPolicyParams {
   subType?: string;
   linkUrl?: string;
   sortOrder?: number;
+}
+
+/**
+ * 应用配置请求参数模型
+ */
+interface AppConfigParams {
+  appKey?: string;
+  appLogoFile?: File;
+  appName?: string;
+  id?: number;
+}
+
+/**
+ * 应用配置模型
+ */
+interface AppConfigModel {
+  id?: number;
+  appKey?: string;
+  appLogo?: string;
+  appName?: string;
+  lastUpdateTime?: string;
+  insertTime?: string;
+}
+
+/**
+ * 应用配置项请求参数模型
+ */
+interface AppConfigItemParams {
+  appKey?: string;
+  configKey?: string;
+  configValue?: string;
+  id?: number;
+  remark?: string;
+}
+
+/**
+ * 应用配置项模型
+ */
+interface AppConfigItemModel {
+  appKey?: string;
+  configKey?: string;
+  configValue?: string;
+  id?: number;
+  insertTime?: string;
+  lastUpdateTime?: string;
+  remark?: string;
 }

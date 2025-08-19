@@ -179,9 +179,9 @@ const PolicyManagement: React.FC = () => {
         success: true,
         total: response.total || 0,
       };
-    } catch (error) {
+    } catch (error:any) {
       console.error('获取政策列表失败:', error);
-      message.error('获取政策列表失败');
+      message.error(error.message ?? '获取政策列表失败');
       return {
         data: [],
         success: false,
@@ -227,9 +227,9 @@ const PolicyManagement: React.FC = () => {
       await AdminAPI.policies.delete(id);
       message.success('删除成功');
       actionRef.current?.reload();
-    } catch (error) {
+    } catch (error:any) {
       console.error('删除失败:', error);
-      message.error('删除失败');
+      message.error(error.message ?? '删除失败');
     } finally {
       setLoading(false);
     }
@@ -260,9 +260,9 @@ const PolicyManagement: React.FC = () => {
       setContent('');
       actionRef.current?.reload();
       return true;
-    } catch (error) {
+    } catch (error:any) {
       console.error('操作失败:', error);
-      message.error('操作失败');
+      message.error(error.message ?? '操作失败');
       return false;
     } finally {
       setLoading(false);

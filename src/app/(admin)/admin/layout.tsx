@@ -46,8 +46,8 @@ const menuDataItems: MenuDataItem[] = [
     ]
   },
   {
-    path: '/admin/config',
-    name: '系统配置',
+    path: '/admin/appConfig',
+    name: '应用配置',
     icon: <SettingOutlined />,
   },
 ]
@@ -74,9 +74,9 @@ function AdminLayout({ children }: Readonly<{ children: React.ReactNode }>) {
         const userInfoData = await AdminAPI.getUserInfo();
         setAdminUserInfo(userInfoData);
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error('获取用户信息失败:', error);
-      message.error('获取用户信息失败');
+      message.error(error.message ?? '获取用户信息失败');
       // 如果获取用户信息失败，可能token已过期，执行登出
       handleLogout();
     } finally {

@@ -18,7 +18,7 @@ function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [captchaUrl, setCaptchaUrl] = useState('');
   const [captchaUuid, setCaptchaUuid] = useState('');
-  
+
   const { message } = App.useApp();
   const { login } = useAdminUserStore();
 
@@ -28,9 +28,9 @@ function AdminLoginPage() {
       const captchaData = await AdminAPI.getCaptchaImage();
       setCaptchaUrl(`data:image/gif;base64,${captchaData.img}`);
       setCaptchaUuid(captchaData.uuid);
-    } catch (error) {
+    } catch (error: any) {
       console.error('获取验证码失败:', error);
-      message.error('获取验证码失败，请重试');
+      message.error(error.message ?? '获取验证码失败，请重试');
     }
   };
 
@@ -55,19 +55,13 @@ function AdminLoginPage() {
 
       message.success('登录成功！');
       router.push('/admin');
-      
+
     } catch (error: any) {
       console.error('登录失败:', error);
-      
+
       // 处理不同类型的错误
-      if (error.response?.status === 400) {
-        message.error('验证码错误或已过期！');
-      } else if (error.response?.status === 401) {
-        message.error('用户名或密码错误！');
-      } else {
-        message.error('登录失败，请重试！');
-      }
-      
+      message.error(error.message ?? '登录失败，请重试！');
+
       // 重新生成验证码
       generateCaptcha();
     } finally {
@@ -147,7 +141,7 @@ function AdminLoginPage() {
           />
           <div className="flex-shrink-0">
             {captchaUrl && (
-              <img  
+              <img
                 src={captchaUrl}
                 alt="验证码"
                 className="h-10 w-24 border border-gray-300 rounded cursor-pointer"

@@ -7,6 +7,9 @@ const newsDetailApi = '/prod-api/website/news/:id';
 // PUT 是更新 POST 是新增
 const updateNewsApi = '/prod-api/website/news';
 
+// 获取系统应用配置
+// /v2/sysAppConfig/selectAppConfig
+
 const AdminAPI = {
   /**
    * 获取验证码图片
@@ -229,7 +232,91 @@ const AdminAPI = {
       const res = await request.delete(`/prod-api/website/policy/${id}`);
       return res.data as ApiResponse<null>;
     }
+  },
+
+  /** App 配置相关接口 */
+  appConfig: {
+    // App config list
+    /**
+     * 获取系统应用配置列表
+     */
+    getAppConfigList: async (params: { pageNum: number; pageSize: number; appName?: string }) => {
+      const res = await request.get('/prod-api/v2/sysAppConfig/selectAppConfig', { params });
+      return res.data as ApiListResponse<AppConfigModel>;
+    },
+
+    updateAppConfig: async (data: AppConfigParams) => {
+      const formData = new FormData();
+      formData.append('appName', data.appName ?? '');
+      formData.append('appKey', data.appKey ?? '');
+      if (data.appLogoFile) {
+        formData.append('appLogoFile', data.appLogoFile);
+      }
+      if (data.id) {
+        formData.append('id', data.id.toString());
+      }
+      const res = await request.post('/prod-api/v2/sysAppConfig/updateAppConfig', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return res.data as ApiResponse<null>;
+    },
+
+    createAppConfig: async (data: AppConfigParams) => {
+      const formData = new FormData();
+      formData.append('appName', data.appName ?? '');
+      formData.append('appKey', data.appKey ?? '');
+      formData.append('appLogoFile', data.appLogoFile ?? '');
+      const res = await request.post('/prod-api/v2/sysAppConfig/addAppConfig', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return res.data as ApiResponse<null>;
+    },
+
+    deleteAppConfig: async (id: number) => {
+      const res = await request.post('/prod-api/v2/sysAppConfig/deleteById', { id });
+      return res.data as ApiResponse<null>;
+    },
+
+    // App config item
+
+    createAppConfigItem: async (data: AppConfigItemParams) => {
+      const res = await request.post('/prod-api/v2/sysAppConfig/item/add', data);
+      return res.data as ApiResponse<null>;
+    },
+
+    deleteAppConfigItem: async (id: number) => {
+      const res = await request.post(`/prod-api/v2/sysAppConfig/item/deleteById`, { id });
+      return res.data as ApiResponse<null>;
+    },
+
+    updateAppConfigItem: async (data: AppConfigItemParams) => {
+      const res = await request.post('/prod-api/v2/sysAppConfig/item/update', data);
+      return res.data as ApiResponse<null>;
+    },
+
+    getAppConfigItemListWithPage: async (params: { pageNum: number; pageSize: number; appKey?: string }) => {
+      const res = await request.get('/prod-api/v2/sysAppConfig/item/page', { params });
+      return res.data as ApiListResponse<AppConfigItemModel>;
+    },
+
+    getAppConfigItemList: async (appKey: string) => {
+      const res = await request.get('/prod-api/v2/sysAppConfig/item/list', { params: { appKey } });
+      return res.data as ApiResponse<Array<AppConfigItemModel>>;
+    },
+  },
+
+  /**
+   * 获取文件下载链接
+   * @param path 文件路径
+   */
+  getFileURL(path: string) {
+    return `${process.env.NEXT_PUBLIC_API_URL}/prod-api/v2/downloadFile?path=${encodeURIComponent(path)}`;
   }
+
 }
 
 export default AdminAPI;
